@@ -6,200 +6,89 @@
 <title>System Design Flashcards</title>
 <style>
 :root {
-  --bg: #f7f7f8;
-  --card-bg: #ffffff;
-  --text: #1a1a1a;
-  --subtext: #666;
-  --border: #e2e2e2;
-  --accent: #4f46e5;
-  --accent-light: #ede9fe;
-  --again: #ef4444;
-  --hard: #f97316;
-  --good: #22c55e;
-  --easy: #3b82f6;
-  --radius: 12px;
-  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --bg: #f7f7f8; --card-bg: #ffffff; --text: #1a1a1a; --subtext: #666;
+  --border: #e2e2e2; --accent: #4f46e5; --accent-light: #ede9fe;
+  --again: #ef4444; --hard: #f97316; --good: #22c55e; --easy: #3b82f6;
+  --radius: 12px; --shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f0f10;
-    --card-bg: #1c1c1e;
-    --text: #f0f0f0;
-    --subtext: #999;
-    --border: #2c2c2e;
-    --accent: #818cf8;
-    --accent-light: #1e1b4b;
+    --bg: #0f0f10; --card-bg: #1c1c1e; --text: #f0f0f0; --subtext: #999;
+    --border: #2c2c2e; --accent: #818cf8; --accent-light: #1e1b4b;
     --shadow: 0 2px 12px rgba(0,0,0,0.4);
   }
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 16px;
-  min-height: 100vh;
-  padding: 0;
-}
+body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 16px; min-height: 100vh; }
 #app { max-width: 600px; margin: 0 auto; padding: 16px; }
-
-/* Header */
-.header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 0 16px;
-}
+.header { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 16px; }
 .header h1 { font-size: 20px; font-weight: 700; }
 .header .stats { font-size: 14px; color: var(--subtext); }
-
-/* Landing screen */
-.landing { display: none; }
-.landing.active { display: block; }
-.section-filters {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
-}
-.filter-btn {
-  padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border);
-  background: var(--card-bg); color: var(--text); font-size: 14px;
-  cursor: pointer; transition: all 0.15s;
-}
-.filter-btn.active {
-  background: var(--accent); color: white; border-color: var(--accent);
-}
-.deck-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
-.section-card {
-  background: var(--card-bg); border-radius: var(--radius);
-  border: 1.5px solid var(--border); padding: 14px 16px;
-  cursor: pointer; transition: all 0.15s;
-  box-shadow: var(--shadow);
-}
+.screen { display: none; }
+.screen.active { display: block; }
+.section-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.filter-btn { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--card-bg); color: var(--text); font-size: 14px; cursor: pointer; transition: all 0.15s; }
+.filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+.deck-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.section-card { background: var(--card-bg); border-radius: var(--radius); border: 1.5px solid var(--border); padding: 14px 16px; cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow); }
 .section-card:hover { border-color: var(--accent); }
 .section-card h3 { font-size: 15px; font-weight: 600; }
 .section-card .meta { font-size: 13px; color: var(--subtext); margin-top: 4px; }
-.section-card .due-badge {
-  display: inline-block; background: var(--accent); color: white;
-  border-radius: 10px; font-size: 12px; padding: 2px 8px; margin-top: 6px;
-}
-.start-btn {
-  width: 100%; padding: 16px; border-radius: var(--radius);
-  background: var(--accent); color: white; font-size: 17px;
-  font-weight: 600; border: none; cursor: pointer;
-  margin-bottom: 12px;
-}
+.start-btn { width: 100%; padding: 16px; border-radius: var(--radius); background: var(--accent); color: white; font-size: 17px; font-weight: 600; border: none; cursor: pointer; margin-bottom: 12px; }
 .start-btn:disabled { opacity: 0.5; cursor: default; }
-
-/* Study screen */
-.study { display: none; }
-.study.active { display: block; }
-.progress-bar {
-  height: 4px; background: var(--border); border-radius: 2px;
-  margin-bottom: 16px; overflow: hidden;
-}
-.progress-fill {
-  height: 100%; background: var(--accent); transition: width 0.3s;
-}
-.card-container {
-  background: var(--card-bg); border-radius: var(--radius);
-  border: 1.5px solid var(--border); box-shadow: var(--shadow);
-  min-height: 240px; padding: 24px; margin-bottom: 16px;
-  display: flex; flex-direction: column;
-}
-.card-section {
-  font-size: 12px; font-weight: 600; color: var(--accent);
-  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;
-}
-.card-front {
-  font-size: 20px; font-weight: 600; line-height: 1.4; flex: 1;
-}
-.card-back {
-  display: none; margin-top: 20px; padding-top: 20px;
-  border-top: 1.5px solid var(--border); font-size: 15px;
-  line-height: 1.6; color: var(--text);
-  white-space: pre-line;
-}
+.btn-outline { padding: 14px; border-radius: var(--radius); border: 1.5px solid var(--accent); background: transparent; color: var(--accent); font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 10px; }
+.btn-secondary { padding: 14px; border-radius: var(--radius); border: 1.5px solid var(--border); background: transparent; color: var(--text); font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 10px; }
+.landing-actions { display: flex; flex-direction: column; gap: 0; margin-bottom: 24px; }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: flex-end; }
+.modal-overlay.active { display: flex; }
+.modal { background: var(--card-bg); border-radius: var(--radius) var(--radius) 0 0; padding: 24px 16px; width: 100%; max-height: 80vh; overflow-y: auto; }
+.modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.modal p { font-size: 14px; color: var(--subtext); margin-bottom: 16px; }
+.tag-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.tag-btn { padding: 10px 16px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--card-bg); color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.tag-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+.tag-btn.featured { border-color: var(--accent); color: var(--accent); }
+.modal-close { padding: 12px; border-radius: var(--radius); border: 1.5px solid var(--border); background: transparent; color: var(--subtext); font-size: 15px; cursor: pointer; width: 100%; }
+.sim-option { background: var(--card-bg); border-radius: var(--radius); border: 1.5px solid var(--border); padding: 16px; cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow); margin-bottom: 10px; }
+.sim-option:hover { border-color: var(--accent); }
+.sim-option h3 { font-size: 15px; font-weight: 600; }
+.sim-option .meta { font-size: 13px; color: var(--subtext); margin-top: 4px; }
+.progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 8px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
+.phase-label { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; min-height: 18px; }
+.card-container { background: var(--card-bg); border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); min-height: 240px; padding: 24px; margin-bottom: 16px; display: flex; flex-direction: column; }
+.card-section { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+.card-front { font-size: 20px; font-weight: 600; line-height: 1.4; flex: 1; }
+.card-back { display: none; margin-top: 20px; padding-top: 20px; border-top: 1.5px solid var(--border); font-size: 15px; line-height: 1.6; color: var(--text); white-space: pre-line; }
 .card-back.visible { display: block; }
-.show-btn {
-  width: 100%; padding: 14px; border-radius: var(--radius);
-  background: var(--accent); color: white; font-size: 17px;
-  font-weight: 600; border: none; cursor: pointer;
-  margin-bottom: 12px;
-}
-.rating-row {
-  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px;
-  display: none;
-}
+.show-btn { width: 100%; padding: 14px; border-radius: var(--radius); background: var(--accent); color: white; font-size: 17px; font-weight: 600; border: none; cursor: pointer; margin-bottom: 12px; }
+.rating-row { display: none; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
 .rating-row.visible { display: grid; }
-.rate-btn {
-  padding: 14px 4px; border-radius: var(--radius); border: none;
-  color: white; font-size: 13px; font-weight: 700; cursor: pointer;
-  min-height: 52px; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 2px;
-}
+.rate-btn { padding: 14px 4px; border-radius: var(--radius); border: none; color: white; font-size: 13px; font-weight: 700; cursor: pointer; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
 .rate-btn .label { font-size: 11px; font-weight: 400; opacity: 0.85; }
-.rate-again { background: var(--again); }
-.rate-hard { background: var(--hard); }
-.rate-good { background: var(--good); }
-.rate-easy { background: var(--easy); }
+.rate-again { background: var(--again); } .rate-hard { background: var(--hard); } .rate-good { background: var(--good); } .rate-easy { background: var(--easy); }
 .counter { font-size: 13px; color: var(--subtext); text-align: center; margin-top: 12px; }
-
-/* Done screen */
-.done { display: none; text-align: center; padding: 40px 16px; }
-.done.active { display: block; }
-.done h2 { font-size: 26px; font-weight: 700; margin-bottom: 12px; }
-.done p { color: var(--subtext); margin-bottom: 24px; font-size: 16px; }
-.done .actions { display: flex; flex-direction: column; gap: 10px; }
-.btn-outline {
-  padding: 14px; border-radius: var(--radius); border: 1.5px solid var(--accent);
-  background: transparent; color: var(--accent); font-size: 16px;
-  font-weight: 600; cursor: pointer;
+.mode-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+.mode-badge.drill { background: #fef3c7; color: #92400e; }
+.mode-badge.sim { background: #dcfce7; color: #166534; }
+@media (prefers-color-scheme: dark) {
+  .mode-badge.drill { background: #78350f; color: #fde68a; }
+  .mode-badge.sim { background: #14532d; color: #86efac; }
 }
-
-/* Drill mode */
-.drill-section {
-  margin-bottom: 24px;
-}
-.drill-section h2 {
-  font-size: 15px; font-weight: 700; margin-bottom: 10px; color: var(--subtext);
-  text-transform: uppercase; letter-spacing: 0.05em;
-}
-.tag-grid {
-  display: flex; flex-wrap: wrap; gap: 8px;
-}
-.tag-chip {
-  padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border);
-  background: var(--card-bg); color: var(--text); font-size: 13px;
-  cursor: pointer; transition: all 0.15s;
-}
-.tag-chip:hover { border-color: var(--accent); }
-.tag-chip.selected {
-  background: var(--accent); color: white; border-color: var(--accent);
-}
-.drill-start-btn {
-  width: 100%; padding: 14px; border-radius: var(--radius);
-  background: transparent; color: var(--accent); font-size: 16px;
-  font-weight: 600; border: 1.5px solid var(--accent); cursor: pointer;
-  margin-top: 12px; display: none;
-}
-.drill-start-btn.visible { display: block; }
-
-/* Drill mode badge on study screen */
-.drill-mode-badge {
-  display: none; background: #7c3aed; color: white;
-  font-size: 11px; font-weight: 700; padding: 2px 8px;
-  border-radius: 10px; text-transform: uppercase; letter-spacing: 0.05em;
-  margin-bottom: 8px;
-}
-.drill-mode-badge.visible { display: inline-block; }
-
-/* Learn more link */
-.learn-more {
-  display: none; margin-top: 14px; padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-.learn-more.visible { display: block; }
-.learn-more a {
-  color: var(--accent); font-size: 13px; text-decoration: none;
-}
-.learn-more a:hover { text-decoration: underline; }
+.draw-actions { display: flex; gap: 10px; margin-top: 16px; }
+.draw-btn { flex: 1; padding: 14px; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; border: none; }
+.draw-sketched { background: var(--accent); color: white; }
+.draw-skip { background: var(--border); color: var(--text); }
+.draw-diagram { margin-top: 16px; overflow-x: auto; }
+.draw-diagram svg { display: block; max-width: 100%; }
+.done-screen { text-align: center; padding: 40px 16px; }
+.done-screen h2 { font-size: 26px; font-weight: 700; margin-bottom: 12px; }
+.done-screen p { color: var(--subtext); margin-bottom: 16px; font-size: 16px; }
+.done-actions { display: flex; flex-direction: column; gap: 10px; }
+.sim-summary { background: var(--card-bg); border-radius: var(--radius); border: 1.5px solid var(--border); padding: 16px; margin-bottom: 20px; text-align: left; }
+.sim-summary h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.sim-stat { font-size: 14px; color: var(--subtext); margin-bottom: 4px; }
+.sim-highlight { font-size: 14px; margin-top: 12px; padding: 10px; background: var(--accent-light); border-radius: 8px; color: var(--text); }
 </style>
 </head>
 <body>
@@ -208,28 +97,42 @@ body {
     <h1>System Design</h1>
     <div class="stats" id="headerStats"></div>
   </div>
-
-  <!-- Landing -->
-  <div class="landing active" id="landing">
+  <div class="screen active" id="landing">
     <div class="section-filters" id="sectionFilters"></div>
     <div class="deck-list" id="deckList"></div>
-    <button class="start-btn" id="startBtn" onclick="startSession()">Start Review</button>
-    <div class="drill-section">
-      <h2>Drill Mode</h2>
-      <div class="tag-grid" id="tagGrid"></div>
-      <button class="drill-start-btn" id="drillStartBtn" onclick="startDrill()">Drill selected tags</button>
+    <div class="landing-actions">
+      <button class="start-btn" id="startBtn" onclick="startSession()">Start Review</button>
+      <button class="btn-outline" onclick="openDrillModal()">Drill by Tag</button>
+      <button class="btn-secondary" onclick="showSimPicker()">Interview Simulator</button>
     </div>
   </div>
-
-  <!-- Study -->
-  <div class="study" id="study">
+  <div class="modal-overlay" id="drillModal">
+    <div class="modal">
+      <h2>Drill by Tag</h2>
+      <p>Pick a tag to review all matching cards, ignoring due dates.</p>
+      <div class="tag-grid" id="tagGrid"></div>
+      <button class="modal-close" onclick="closeDrillModal()">Cancel</button>
+    </div>
+  </div>
+  <div class="screen" id="simPicker">
+    <h2 style="font-size:20px;font-weight:700;margin-bottom:4px;">Interview Simulator</h2>
+    <p style="font-size:14px;color:var(--subtext);margin-bottom:20px;">Rehearsal mode — ratings won't affect your scheduling.</p>
+    <div id="simList"></div>
+    <button class="btn-outline" onclick="showLanding()" style="margin-top:8px;">Back</button>
+  </div>
+  <div class="screen" id="study">
+    <div class="mode-badge" id="modeBadge" style="display:none"></div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="drill-mode-badge" id="drillModeBadge">Drill Mode</div>
+    <div class="phase-label" id="phaseLabel"></div>
     <div class="card-container" id="cardContainer">
       <div class="card-section" id="cardSection"></div>
       <div class="card-front" id="cardFront"></div>
       <div class="card-back" id="cardBack"></div>
-      <div class="learn-more" id="learnMore"><a id="learnMoreLink" href="#" target="_blank" rel="noopener">📖 learn more</a></div>
+      <div class="draw-actions" id="drawActions" style="display:none">
+        <button class="draw-btn draw-sketched" onclick="revealDrawCard()">I've sketched it</button>
+        <button class="draw-btn draw-skip" onclick="skipDrawCard()">Skip</button>
+      </div>
+      <div class="draw-diagram" id="drawDiagram" style="display:none"></div>
     </div>
     <button class="show-btn" id="showBtn" onclick="showAnswer()">Show Answer</button>
     <div class="rating-row" id="ratingRow">
@@ -240,326 +143,454 @@ body {
     </div>
     <div class="counter" id="counter"></div>
   </div>
-
-  <!-- Done -->
-  <div class="done" id="done">
-    <h2 id="doneTitle"></h2>
-    <p id="doneSubtitle"></p>
-    <div class="actions">
-      <button class="start-btn" onclick="keepGoing()">Keep Going</button>
-      <button class="btn-outline" onclick="showLanding()">Back to Deck</button>
+  <div class="screen" id="done">
+    <div class="done-screen">
+      <h2 id="doneTitle"></h2>
+      <p id="doneSubtitle"></p>
+      <div id="simSummaryBlock"></div>
+      <div class="done-actions">
+        <button class="start-btn" id="keepGoingBtn" onclick="keepGoing()">Keep Going</button>
+        <button class="btn-outline" onclick="showLanding()">Back to Deck</button>
+      </div>
     </div>
   </div>
 </div>
-
 <script>
 const STORAGE_KEY = 'sysdesign-flashcards-progress-v1';
-
 const CARDS = [
-  // ============================================================
   // SECTION 1 — FUNDAMENTALS
-  // ============================================================
-  {id:"f01",section:"Fundamentals",tags:["scalability","stars"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What are the three guarantees of CAP theorem, and why can you only pick two?",back:"Consistency (every read sees the latest write), Availability (every request gets a response), Partition Tolerance (the system works despite network splits).\n\nYou can only pick two because during a network partition you must choose: return a potentially stale response (AP) or refuse to respond at all (CP). A CA system doesn't exist in practice — partitions happen."},
-  {id:"f02",section:"Fundamentals",tags:["scalability","storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"CP vs AP: give one database example of each and why.",back:"CP: HBase, ZooKeeper — they halt or return errors during a partition rather than serve stale data. Good for banking, inventory counts.\n\nAP: Cassandra, DynamoDB (by default) — they return the best answer they have and resolve conflicts later. Good for shopping carts, social feeds."},
-  {id:"f03",section:"Fundamentals",tags:["scalability","storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is BASE, and how does it contrast with ACID?",back:"BASE: Basically Available, Soft state, Eventually consistent.\nACID: Atomicity, Consistency, Isolation, Durability.\n\nACID = strong guarantees, typically relational DBs, single-node transactions.\nBASE = looser guarantees, NoSQL distributed systems. BASE trades correctness for availability and performance."},
-  {id:"f04",section:"Fundamentals",tags:["scalability","storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What are the ACID properties, and which is hardest to achieve in a distributed system?",back:"Atomicity: all-or-nothing.\nConsistency: DB transitions between valid states.\nIsolation: concurrent transactions don't see each other's partial state.\nDurability: committed writes survive crashes.\n\nIsolation is hardest distributed (requires coordination). Atomicity is solved by 2PC, but 2PC is slow."},
-  {id:"f05",section:"Fundamentals",tags:["scalability","stars"],source_url:"https://github.com/donnemartin/system-design-primer",front:"Latency numbers: order these from fastest to slowest — L1 cache, disk seek, SSD read, RAM access, network round-trip (same datacenter), network round-trip (cross-continent).",back:"L1 cache: ~1 ns\nRAM: ~100 ns\nSSD read: ~100 μs\nDisk seek: ~10 ms\nSame-DC round-trip: ~0.5 ms\nCross-continent: ~150 ms\n\nKey ratios: RAM is 1000x faster than SSD. SSD is 100x faster than disk. These bound every design decision about caching."},
-  {id:"f06",section:"Fundamentals",tags:["scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is strong consistency vs eventual consistency? Give an example of when each is required.",back:"Strong/linearizability: after a write, all reads return that value immediately. Required for: bank balance, seat inventory, leader election.\n\nEventual consistency: replicas converge given no new writes — but reads may temporarily be stale. Fine for: social media likes, DNS records, shopping cart."},
+  {id:"f01",section:"Fundamentals",tags:["scalability"],front:"What are the three guarantees of CAP theorem, and why can you only pick two?",back:"Consistency (every read sees the latest write), Availability (every request gets a response), Partition Tolerance (the system works despite network splits).\n\nYou can only pick two because during a network partition you must choose: return a potentially stale response (AP) or refuse to respond at all (CP). A CA system doesn't exist in practice — partitions happen."},
+  {id:"f02",section:"Fundamentals",tags:["scalability"],front:"CP vs AP: give one database example of each and why.",back:"CP: HBase, ZooKeeper — they halt or return errors during a partition rather than serve stale data. Good for banking, inventory counts.\n\nAP: Cassandra, DynamoDB (by default) — they return the best answer they have and resolve conflicts later. Good for shopping carts, social feeds."},
+  {id:"f03",section:"Fundamentals",tags:["scalability"],front:"What is BASE, and how does it contrast with ACID?",back:"BASE: Basically Available, Soft state, Eventually consistent.\nACID: Atomicity, Consistency, Isolation, Durability.\n\nACID = strong guarantees, typically relational DBs, single-node transactions.\nBASE = looser guarantees, NoSQL distributed systems. BASE trades correctness for availability and performance."},
+  {id:"f04",section:"Fundamentals",tags:["scalability"],front:"What are the ACID properties, and which is hardest to achieve in a distributed system?",back:"Atomicity: all-or-nothing.\nConsistency: DB transitions between valid states.\nIsolation: concurrent transactions don't see each other's partial state.\nDurability: committed writes survive crashes.\n\nIsolation is hardest distributed (requires coordination). Atomicity is solved by 2PC, but 2PC is slow."},
+  {id:"f05",section:"Fundamentals",tags:["scalability"],front:"Latency numbers: order these from fastest to slowest — L1 cache, disk seek, SSD read, RAM access, network round-trip (same datacenter), network round-trip (cross-continent).",back:"L1 cache: ~1 ns\nRAM: ~100 ns\nSSD read: ~100 μs\nDisk seek: ~10 ms\nSame-DC round-trip: ~0.5 ms\nCross-continent: ~150 ms\n\nKey ratios: RAM is 1000x faster than SSD. SSD is 100x faster than disk. These bound every design decision about caching."},
+  {id:"f06",section:"Fundamentals",tags:["scalability","storage"],front:"What is strong consistency vs eventual consistency? Give an example of when each is required.",back:"Strong/linearizability: after a write, all reads return that value immediately. Required for: bank balance, seat inventory, leader election.\n\nEventual consistency: replicas converge given no new writes — but reads may temporarily be stale. Fine for: social media likes, DNS records, shopping cart."},
   {id:"f07",section:"Fundamentals",tags:["scalability"],front:"What is causal consistency, and when does it matter more than eventual consistency?",back:"Causal consistency guarantees that operations causally related appear in causal order to all readers — but concurrent operations may be seen in any order.\n\nMatters when: posting a reply should not appear before the original post. Causal is weaker than linearizability but stronger than eventual."},
-  {id:"f08",section:"Fundamentals",tags:["storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is a write-ahead log (WAL) and why do databases use it?",back:"A WAL records every intended change before applying it to the data file. On crash, the DB replays the log to recover.\n\nWhy: fsync to a sequential log is faster than random writes to a B-tree. Ensures durability (ACID-D) without expensive full-page flushes."},
-  {id:"f09",section:"Fundamentals",tags:["scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is the difference between throughput and latency? Why does optimizing one often hurt the other?",back:"Throughput: requests/second the system handles.\nLatency: time to complete a single request.\n\nConflict: batching increases throughput (amortize overhead) but adds latency per item. Parallelism increases throughput but can cause contention. Caching reduces latency but may reduce write throughput due to invalidation."},
-  {id:"f10",section:"Fundamentals",tags:["scalability","stars"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is idempotency, and why is it critical in distributed systems?",back:"An operation is idempotent if applying it multiple times yields the same result as once. Critical because networks cause duplicate delivery — if your payment handler isn't idempotent, retries charge twice.\n\nImplementation: idempotency key (UUID from client), server deduplicates by storing processed keys."},
+  {id:"f08",section:"Fundamentals",tags:["storage"],front:"What is a write-ahead log (WAL) and why do databases use it?",back:"A WAL records every intended change before applying it to the data file. On crash, the DB replays the log to recover.\n\nWhy: fsync to a sequential log is faster than random writes to a B-tree. Ensures durability (ACID-D) without expensive full-page flushes."},
+  {id:"f09",section:"Fundamentals",tags:["scalability"],front:"What is the difference between throughput and latency? Why does optimizing one often hurt the other?",back:"Throughput: requests/second the system handles.\nLatency: time to complete a single request.\n\nConflict: batching increases throughput (amortize overhead) but adds latency per item. Parallelism increases throughput but can cause contention. Caching reduces latency but may reduce write throughput due to invalidation."},
+  {id:"f10",section:"Fundamentals",tags:["scalability","clay"],front:"What is idempotency, and why is it critical in distributed systems?",back:"An operation is idempotent if applying it multiple times yields the same result as once. Critical because networks cause duplicate delivery — if your payment handler isn't idempotent, retries charge twice.\n\nImplementation: idempotency key (UUID from client), server deduplicates by storing processed keys."},
   {id:"f11",section:"Fundamentals",tags:["scalability"],front:"What is a race condition, and name two ways to prevent them in a distributed system.",back:"A race condition is when the outcome depends on the order of concurrent operations in a way that produces incorrect results.\n\nPrevention:\n1. Optimistic locking — compare-and-swap (CAS), retry on conflict\n2. Pessimistic locking — acquire lock before read-modify-write (slow under contention)"},
   {id:"f12",section:"Fundamentals",tags:["scalability","storage"],front:"What is the difference between synchronous and asynchronous replication, and when do you pick each?",back:"Sync: leader waits for replica to confirm write before returning to client. Durable, but adds latency and blocks if replica is slow.\n\nAsync: leader returns immediately; replica lags. Faster, but you can lose writes if leader crashes before replica catches up.\n\nPick: sync for financial data; async for read replicas serving analytics."},
 
-  // ============================================================
   // SECTION 2 — SCALABILITY PATTERNS
-  // ============================================================
-  {id:"s01",section:"Scalability Patterns",tags:["scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is the difference between horizontal and vertical scaling? What are the limits of each?",back:"Vertical (scale up): bigger machine — more CPU/RAM. Simple, no code changes. Hard limit: largest machine available; SPOF; expensive.\n\nHorizontal (scale out): more machines behind a load balancer. Theoretically unlimited. Requires stateless services or shared state management."},
-  {id:"s02",section:"Scalability Patterns",tags:["scalability","stars"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is consistent hashing, and what problem does it solve?",back:"Consistent hashing maps keys and nodes to a ring. Each key goes to the first node clockwise from its position.\n\nProblem solved: when you add/remove nodes in naive mod-N hashing, N changes → almost all keys remap (thundering herd, cache invalidation). With consistent hashing, only K/N keys move (K=keys, N=nodes)."},
+  {id:"s01",section:"Scalability Patterns",tags:["scalability"],front:"What is the difference between horizontal and vertical scaling? What are the limits of each?",back:"Vertical (scale up): bigger machine — more CPU/RAM. Simple, no code changes. Hard limit: largest machine available; SPOF; expensive.\n\nHorizontal (scale out): more machines behind a load balancer. Theoretically unlimited. Requires stateless services or shared state management."},
+  {id:"s02",section:"Scalability Patterns",tags:["scalability","storage"],front:"What is consistent hashing, and what problem does it solve?",back:"Consistent hashing maps keys and nodes to a ring. Each key goes to the first node clockwise from its position.\n\nProblem solved: when you add/remove nodes in naive mod-N hashing, N changes → almost all keys remap (thundering herd, cache invalidation). With consistent hashing, only K/N keys move (K=keys, N=nodes)."},
   {id:"s03",section:"Scalability Patterns",tags:["scalability"],front:"What are virtual nodes in consistent hashing, and why use them?",back:"Each physical node owns multiple positions on the ring. Benefit: distributes load more evenly when machines differ in capacity, and spreads rebalancing load across many nodes when one is removed.\n\nWithout vnodes: one departing node dumps all its load on one neighbor."},
-  {id:"s04",section:"Scalability Patterns",tags:["scalability","storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is database sharding, and what are the three common sharding strategies?",back:"Sharding splits data across multiple DB instances (shards) so no single machine holds all data.\n\n1. Range sharding: shard by key range (simple, hot spots on sequential keys)\n2. Hash sharding: shard = hash(key) % N (even distribution, hard to range scan)\n3. Directory sharding: lookup table maps key → shard (flexible, extra lookup overhead)"},
-  {id:"s05",section:"Scalability Patterns",tags:["scalability","storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What are the main downsides of database sharding?",back:"1. Cross-shard JOINs require application-level joins (slow, complex)\n2. Distributed transactions are hard (2PC needed)\n3. Hotspots if shard key is poorly chosen\n4. Re-sharding when a shard grows is painful\n5. Operational complexity multiplied by N"},
-  {id:"s06",section:"Scalability Patterns",tags:["scalability","storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is database replication, and what are the main topologies?",back:"Replication copies data from a primary to one or more replicas.\n\nTopologies:\n- Single-leader: one write master, N read replicas (most common)\n- Multi-leader: writes to any node, conflict resolution needed (active-active geo)\n- Leaderless (Dynamo-style): writes to quorum of N nodes; W+R > N for consistency"},
+  {id:"s04",section:"Scalability Patterns",tags:["scalability","storage"],front:"What is database sharding, and what are the three common sharding strategies?",back:"Sharding splits data across multiple DB instances (shards) so no single machine holds all data.\n\n1. Range sharding: shard by key range (simple, hot spots on sequential keys)\n2. Hash sharding: shard = hash(key) % N (even distribution, hard to range scan)\n3. Directory sharding: lookup table maps key → shard (flexible, extra lookup overhead)"},
+  {id:"s05",section:"Scalability Patterns",tags:["scalability","storage"],front:"What are the main downsides of database sharding?",back:"1. Cross-shard JOINs require application-level joins (slow, complex)\n2. Distributed transactions are hard (2PC needed)\n3. Hotspots if shard key is poorly chosen\n4. Re-sharding when a shard grows is painful\n5. Operational complexity multiplied by N"},
+  {id:"s06",section:"Scalability Patterns",tags:["scalability","storage"],front:"What is database replication, and what are the main topologies?",back:"Replication copies data from a primary to one or more replicas.\n\nTopologies:\n- Single-leader: one write master, N read replicas (most common)\n- Multi-leader: writes to any node, conflict resolution needed (active-active geo)\n- Leaderless (Dynamo-style): writes to quorum of N nodes; W+R > N for consistency"},
   {id:"s07",section:"Scalability Patterns",tags:["scalability","storage"],front:"In leader/replica replication, what is replication lag, and why does it matter?",back:"Replication lag is the delay between a write on the leader and its appearance on a replica. During lag, reads from replicas are stale.\n\nMatters for: read-your-writes consistency (user posts then immediately reads — may see old state). Fix: route reads to leader for a short window after a user's own writes."},
   {id:"s08",section:"Scalability Patterns",tags:["scalability","storage"],front:"What is a read replica, and what problem does it solve?",back:"A read replica receives asynchronous copies of the primary's writes and handles read traffic only.\n\nSolves: read-heavy workloads (analytics, dashboards) that would overwhelm a single primary. Doesn't help write throughput."},
   {id:"s09",section:"Scalability Patterns",tags:["scalability"],front:"What is a connection pool, and why is it important at scale?",back:"A connection pool maintains a set of open DB connections reused across requests instead of opening a new connection per request.\n\nImportant because: DB connections are expensive (TCP handshake, auth, memory). Without pooling, 10K concurrent requests = 10K DB connections → DB crashes."},
-  {id:"s10",section:"Scalability Patterns",tags:["scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"Explain the thundering herd problem and two ways to prevent it.",back:"When a cache expires or a service restarts, many requests simultaneously miss the cache and slam the DB.\n\nPrevention:\n1. Cache lock / mutex: only one request populates the cache; others wait\n2. Probabilistic early expiration: pre-warm cache slightly before TTL expires"},
-  {id:"s11",section:"Scalability Patterns",tags:["scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is a CDN and when should you use one?",back:"A CDN (Content Delivery Network) caches static assets at edge nodes close to users.\n\nUse when: serving images, JS, CSS, video globally; read-heavy with geographic users; want to offload origin. Not useful for: highly dynamic, user-specific, real-time data."},
-  {id:"s12",section:"Scalability Patterns",tags:["scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What are the four main types of load balancers and when do you use each?",back:"L4 (transport): routes by IP/TCP port — fast, no content awareness. Good for raw throughput.\nL7 (application): routes by URL, headers, cookies — enables path-based routing, sticky sessions, SSL termination.\nDNS round-robin: cheapest, no health checks.\nGlobal LB: routes by geography (Anycast, GSLB)."},
+  {id:"s10",section:"Scalability Patterns",tags:["scalability"],front:"Explain the thundering herd problem and two ways to prevent it.",back:"When a cache expires or a service restarts, many requests simultaneously miss the cache and slam the DB.\n\nPrevention:\n1. Cache lock / mutex: only one request populates the cache; others wait\n2. Probabilistic early expiration: pre-warm cache slightly before TTL expires"},
+  {id:"s11",section:"Scalability Patterns",tags:["scalability"],front:"What is a CDN and when should you use one?",back:"A CDN (Content Delivery Network) caches static assets at edge nodes close to users.\n\nUse when: serving images, JS, CSS, video globally; read-heavy with geographic users; want to offload origin. Not useful for: highly dynamic, user-specific, real-time data."},
+  {id:"s12",section:"Scalability Patterns",tags:["scalability"],front:"What are the four main types of load balancers and when do you use each?",back:"L4 (transport): routes by IP/TCP port — fast, no content awareness. Good for raw throughput.\nL7 (application): routes by URL, headers, cookies — enables path-based routing, sticky sessions, SSL termination.\nDNS round-robin: cheapest, no health checks.\nGlobal LB: routes by geography (Anycast, GSLB)."},
   {id:"s13",section:"Scalability Patterns",tags:["scalability"],front:"What is the difference between active-active and active-passive failover?",back:"Active-active: all nodes handle traffic simultaneously. Failure → load shifts to remaining nodes. Higher throughput, no wasted standby capacity.\n\nActive-passive: primary handles all traffic; standby waits. Failure → promote standby. Simpler, but wasteful and has failover delay (seconds to minutes)."},
 
-  // ============================================================
   // SECTION 3 — STORAGE & DATABASES
-  // ============================================================
-  {id:"db01",section:"Storage & Databases",tags:["storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is the difference between a B-tree and an LSM tree? Which should you use for write-heavy workloads?",back:"B-tree: in-place updates, reads are O(log N), good read performance. Each write may touch multiple disk pages (write amplification).\n\nLSM (Log-Structured Merge): append-only writes to memtable → flushed to SSTables → merged in background. Very fast writes, read amplification (must check multiple levels). Use LSM for write-heavy: Cassandra, RocksDB, LevelDB."},
+  {id:"db01",section:"Storage & Databases",tags:["storage"],front:"What is the difference between a B-tree and an LSM tree? Which should you use for write-heavy workloads?",back:"B-tree: in-place updates, reads are O(log N), good read performance. Each write may touch multiple disk pages (write amplification).\n\nLSM (Log-Structured Merge): append-only writes to memtable → flushed to SSTables → merged in background. Very fast writes, read amplification (must check multiple levels). Use LSM for write-heavy: Cassandra, RocksDB, LevelDB."},
   {id:"db02",section:"Storage & Databases",tags:["storage"],front:"What is write amplification and read amplification in storage engines?",back:"Write amplification: one logical write causes multiple physical writes (compaction in LSM, COW pages in B-tree). Measured as ratio of physical to logical bytes.\n\nRead amplification: one logical read requires multiple physical reads (multiple SSTable levels in LSM). B-trees have lower read amplification than LSM."},
-  {id:"db03",section:"Storage & Databases",tags:["storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"When should you choose SQL vs NoSQL?",back:"SQL: structured data, complex queries, ACID transactions, strong schema, joins needed. E.g., financial records, user accounts.\n\nNoSQL: flexible schema, massive scale, simple access patterns, document/graph/time-series data. E.g., product catalog (document), social graph (graph DB), metrics (TSDB).\n\nDefault to SQL. Add NoSQL when you have a specific need it addresses."},
+  {id:"db03",section:"Storage & Databases",tags:["storage"],front:"When should you choose SQL vs NoSQL?",back:"SQL: structured data, complex queries, ACID transactions, strong schema, joins needed. E.g., financial records, user accounts.\n\nNoSQL: flexible schema, massive scale, simple access patterns, document/graph/time-series data. E.g., product catalog (document), social graph (graph DB), metrics (TSDB).\n\nDefault to SQL. Add NoSQL when you have a specific need it addresses."},
   {id:"db04",section:"Storage & Databases",tags:["storage"],front:"What is denormalization, and when is it worth the cost?",back:"Denormalization duplicates data to reduce joins — e.g., storing user_name in the posts table instead of joining to users.\n\nWorth it when: reads far outnumber writes, joins are expensive at scale, you can tolerate eventual consistency of the denormalized copy. Cost: update anomalies, dual writes."},
-  {id:"db05",section:"Storage & Databases",tags:["storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What are the four main NoSQL database types? Give an example of each and its use case.",back:"Key-value: Redis, DynamoDB — session store, cache, rate limiting.\nDocument: MongoDB, Firestore — product catalog, user profiles with variable fields.\nColumn-family: Cassandra, HBase — time-series, write-heavy analytics, wide rows.\nGraph: Neo4j — social graph, fraud detection, recommendation systems."},
-  {id:"db06",section:"Storage & Databases",tags:["storage","identity-resolution"],front:"What is a Bloom filter, and where is it used in storage systems?",back:"A Bloom filter is a probabilistic data structure that answers 'definitely not present' or 'maybe present' in O(1) with very low false-positive rate.\n\nUsed in: LSM trees to avoid disk lookups for keys definitely not in an SSTable; BigTable; Cassandra read path. Also useful for: dedup in Clay-style enrichment pipelines."},
+  {id:"db05",section:"Storage & Databases",tags:["storage"],front:"What are the four main NoSQL database types? Give an example of each and its use case.",back:"Key-value: Redis, DynamoDB — session store, cache, rate limiting.\nDocument: MongoDB, Firestore — product catalog, user profiles with variable fields.\nColumn-family: Cassandra, HBase — time-series, write-heavy analytics, wide rows.\nGraph: Neo4j — social graph, fraud detection, recommendation systems."},
+  {id:"db06",section:"Storage & Databases",tags:["storage","clay","identity-resolution"],front:"What is a Bloom filter, and where is it used in storage systems?",back:"A Bloom filter is a probabilistic data structure that answers 'definitely not present' or 'maybe present' in O(1) with very low false-positive rate.\n\nUsed in: LSM trees to avoid disk lookups for keys definitely not in an SSTable; BigTable; Cassandra read path. Also useful for: dedup in Clay-style enrichment pipelines."},
   {id:"db07",section:"Storage & Databases",tags:["storage"],front:"What are the SQL transaction isolation levels and what anomaly does each prevent?",back:"Read Uncommitted: no protection.\nRead Committed: prevents dirty reads.\nRepeatable Read: prevents non-repeatable reads (MySQL default).\nSerializable: prevents phantom reads — strongest, slowest.\n\nPhantom read: two identical range queries in same txn return different rows because another txn inserted in between."},
   {id:"db08",section:"Storage & Databases",tags:["storage"],front:"What is a time-series database, and what makes it different from a relational DB?",back:"A TSDB (e.g., InfluxDB, TimescaleDB) is optimized for append-heavy, time-ordered data with timestamp as primary dimension.\n\nDifferences: automatic partitioning by time, compression for sequential numeric data, downsampling (roll up old data), retention policies, no complex JOINs needed."},
   {id:"db09",section:"Storage & Databases",tags:["storage"],front:"What is a columnar storage format, and why is it better for analytics?",back:"Columnar stores (Parquet, ORC, Redshift) store all values of one column together vs row stores (all columns of one row together).\n\nBetter for analytics: SELECT over 2 of 100 columns only reads 2% of data. Column data compresses much better (homogeneous types). But row stores are better for OLTP (fetching whole rows)."},
-  {id:"db10",section:"Storage & Databases",tags:["storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is a cache eviction policy, and what are the main options?",back:"LRU (Least Recently Used): evict oldest accessed — good for temporal locality.\nLFU (Least Frequently Used): evict least accessed — good for hotspot protection.\nFIFO: evict oldest inserted — simple, poor cache hit rate.\nRandom: simple, surprisingly competitive.\n\nRedis default: LRU (configurable). Most production systems use LRU or LFU."},
-  {id:"db11",section:"Storage & Databases",tags:["storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is cache-aside (lazy loading) vs write-through caching?",back:"Cache-aside: app checks cache first; on miss, reads DB and populates cache. Simple but cache is stale until TTL.\n\nWrite-through: every write goes to cache AND DB synchronously. Cache always up to date, but writes are slower, wasted cache space for write-once keys.\n\nCache-aside is the default. Write-through for data you'll read immediately after writing."},
+  {id:"db10",section:"Storage & Databases",tags:["storage"],front:"What is a cache eviction policy, and what are the main options?",back:"LRU (Least Recently Used): evict oldest accessed — good for temporal locality.\nLFU (Least Frequently Used): evict least accessed — good for hotspot protection.\nFIFO: evict oldest inserted — simple, poor cache hit rate.\nRandom: simple, surprisingly competitive.\n\nRedis default: LRU (configurable). Most production systems use LRU or LFU."},
+  {id:"db11",section:"Storage & Databases",tags:["storage"],front:"What is cache-aside (lazy loading) vs write-through caching?",back:"Cache-aside: app checks cache first; on miss, reads DB and populates cache. Simple but cache is stale until TTL.\n\nWrite-through: every write goes to cache AND DB synchronously. Cache always up to date, but writes are slower, wasted cache space for write-once keys.\n\nCache-aside is the default. Write-through for data you'll read immediately after writing."},
   {id:"db12",section:"Storage & Databases",tags:["storage"],front:"What is the N+1 query problem and how do you fix it?",back:"Fetching N parent records then making N separate DB queries for children — O(N) queries instead of 2.\n\nFix: eager loading via JOIN, or batch load all children in one IN() query, then join in application code. ORMs like ActiveRecord have include/preload to solve this."},
-  {id:"db13",section:"Storage & Databases",tags:["storage","scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is a distributed transaction, and why is two-phase commit (2PC) problematic?",back:"A distributed transaction spans multiple nodes and must either all commit or all abort.\n\n2PC: Phase 1 (prepare): coordinator asks all participants if they're ready. Phase 2 (commit/abort): coordinator sends decision.\n\nProblem: if coordinator crashes after prepare but before commit, participants are stuck in uncertain state (blocking protocol). Slow and a SPOF."},
+  {id:"db13",section:"Storage & Databases",tags:["storage","scalability"],front:"What is a distributed transaction, and why is two-phase commit (2PC) problematic?",back:"A distributed transaction spans multiple nodes and must either all commit or all abort.\n\n2PC: Phase 1 (prepare): coordinator asks all participants if they're ready. Phase 2 (commit/abort): coordinator sends decision.\n\nProblem: if coordinator crashes after prepare but before commit, participants are stuck in uncertain state (blocking protocol). Slow and a SPOF."},
 
-  // ============================================================
   // SECTION 4 — MESSAGING & ASYNC
-  // ============================================================
-  {id:"mq01",section:"Messaging & Async",tags:["messaging"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is the difference between a message queue (SQS) and a log-based message broker (Kafka)?",back:"Queue (SQS): each message consumed by exactly one consumer and deleted. Fan-out requires separate queues. Good for work distribution, task queues.\n\nLog (Kafka): messages retained on disk; multiple consumer groups each replay independently. Good for event streaming, audit trail, replay, multiple consumers of same event."},
-  {id:"mq02",section:"Messaging & Async",tags:["messaging"],front:"What is a dead-letter queue (DLQ) and why is it essential?",back:"A DLQ receives messages that fail processing repeatedly (exceed max retry count).\n\nEssential because: without DLQ, a poison-pill message loops forever, blocking the queue. DLQ quarantines bad messages for inspection/manual reprocessing without stopping the pipeline."},
-  {id:"mq03",section:"Messaging & Async",tags:["messaging","scalability"],front:"What is backpressure, and how do message queues implement it?",back:"Backpressure is a mechanism for consumers to signal to producers to slow down when they can't keep up.\n\nQueues: the queue depth acts as a buffer; if producers > consumers, queue grows until it applies backpressure (reject new messages or signal producer to pause). Kafka: consumer lag metric triggers alerts/scaling."},
-  {id:"mq04",section:"Messaging & Async",tags:["messaging"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is at-least-once vs exactly-once delivery, and what's required to achieve exactly-once?",back:"At-least-once: message will be delivered ≥ 1 time (acks, retries). Requires idempotent consumers.\nAt-most-once: message may be dropped but never duplicated.\nExactly-once: delivered precisely once — hardest.\n\nAchieving exactly-once: transactional producers + idempotent consumers with dedup (Kafka transactions, SQS FIFO with dedup ID)."},
+  {id:"mq01",section:"Messaging & Async",tags:["messaging","clay"],front:"What is the difference between a message queue (SQS) and a log-based message broker (Kafka)?",back:"Queue (SQS): each message consumed by exactly one consumer and deleted. Fan-out requires separate queues. Good for work distribution, task queues.\n\nLog (Kafka): messages retained on disk; multiple consumer groups each replay independently. Good for event streaming, audit trail, replay, multiple consumers of same event."},
+  {id:"mq02",section:"Messaging & Async",tags:["messaging","clay"],front:"What is a dead-letter queue (DLQ) and why is it essential?",back:"A DLQ receives messages that fail processing repeatedly (exceed max retry count).\n\nEssential because: without DLQ, a poison-pill message loops forever, blocking the queue. DLQ quarantines bad messages for inspection/manual reprocessing without stopping the pipeline."},
+  {id:"mq03",section:"Messaging & Async",tags:["messaging"],front:"What is backpressure, and how do message queues implement it?",back:"Backpressure is a mechanism for consumers to signal to producers to slow down when they can't keep up.\n\nQueues: the queue depth acts as a buffer; if producers > consumers, queue grows until it applies backpressure (reject new messages or signal producer to pause). Kafka: consumer lag metric triggers alerts/scaling."},
+  {id:"mq04",section:"Messaging & Async",tags:["messaging"],front:"What is at-least-once vs exactly-once delivery, and what's required to achieve exactly-once?",back:"At-least-once: message will be delivered ≥ 1 time (acks, retries). Requires idempotent consumers.\nAt-most-once: message may be dropped but never duplicated.\nExactly-once: delivered precisely once — hardest.\n\nAchieving exactly-once: transactional producers + idempotent consumers with dedup (Kafka transactions, SQS FIFO with dedup ID)."},
   {id:"mq05",section:"Messaging & Async",tags:["messaging"],front:"What is pub/sub, and how does it differ from point-to-point messaging?",back:"Pub/sub: publisher emits events to a topic; any number of subscribers receive every event. Decoupled — publisher doesn't know subscribers.\n\nPoint-to-point: message goes to exactly one consumer. Used for work queues.\n\nPub/sub enables fan-out without code change: add a new subscriber without touching the publisher."},
   {id:"mq06",section:"Messaging & Async",tags:["messaging"],front:"What is Kafka's partition model, and how does it affect ordering and parallelism?",back:"A Kafka topic is split into partitions. Messages in a partition are strictly ordered. Multiple consumers can process different partitions in parallel.\n\nKey insight: ordering is guaranteed only within a partition. Use partition key = user_id or entity_id to ensure all events for one entity land in the same partition."},
   {id:"mq07",section:"Messaging & Async",tags:["messaging"],front:"When would you choose SQS over Kafka, and vice versa?",back:"SQS: simpler ops, fully managed, low volume, exactly-once semantics optional (FIFO), good for task queues and work distribution.\n\nKafka: high throughput (millions/sec), event sourcing, replay needed, multiple independent consumers, stream processing (Kafka Streams / Flink). Higher operational complexity."},
   {id:"mq08",section:"Messaging & Async",tags:["messaging"],front:"What is stream processing, and what are the three main window types?",back:"Stream processing applies computation to infinite, continuous data streams (vs batch processing of finite datasets).\n\nWindows:\n1. Tumbling: fixed non-overlapping intervals (5m, 5m, 5m)\n2. Sliding: overlapping intervals (every 1m over last 5m)\n3. Session: gaps in activity define boundaries (variable size)"},
-  {id:"mq09",section:"Messaging & Async",tags:["messaging","storage"],front:"What is the outbox pattern, and why does it solve dual-write problems?",back:"The outbox pattern: write both your business entity AND an outbox event row in the SAME database transaction. A separate process (change data capture or poller) reads the outbox and publishes to the queue.\n\nSolves: without this, you might write to DB but fail to publish event (or vice versa), causing inconsistency. Atomic write guarantees both happen."},
+  {id:"mq09",section:"Messaging & Async",tags:["messaging","clay"],front:"What is the outbox pattern, and why does it solve dual-write problems?",back:"The outbox pattern: write both your business entity AND an outbox event row in the SAME database transaction. A separate process (change data capture or poller) reads the outbox and publishes to the queue.\n\nSolves: without this, you might write to DB but fail to publish event (or vice versa), causing inconsistency. Atomic write guarantees both happen."},
 
-  // ============================================================
-  // SECTION 5 — RATE LIMITING & THROTTLING
-  // ============================================================
-  {id:"rl01",section:"Rate Limiting",tags:["rate-limiting"],source_url:"https://stripe.com/blog/rate-limiters",front:"What is the token bucket algorithm for rate limiting?",back:"A bucket holds up to N tokens and refills at rate R tokens/second.\nEach request consumes one token.\nIf bucket is empty: reject (or queue) the request.\n\nAllows bursting up to N requests instantaneously. Refill rate controls steady-state throughput. Most common algorithm for API rate limits."},
-  {id:"rl02",section:"Rate Limiting",tags:["rate-limiting"],source_url:"https://stripe.com/blog/rate-limiters",front:"What is the leaky bucket algorithm, and how does it differ from token bucket?",back:"Leaky bucket: requests enter a queue (the bucket); they're processed at a fixed rate (the leak). Requests that overflow are dropped.\n\nDifference: token bucket allows bursting (consume multiple tokens at once). Leaky bucket enforces constant output rate — smooths traffic. Token bucket is better for most APIs; leaky bucket for traffic shaping."},
-  {id:"rl03",section:"Rate Limiting",tags:["rate-limiting"],source_url:"https://stripe.com/blog/rate-limiters",front:"What is the sliding window log algorithm for rate limiting?",back:"Store a timestamp for each request in a sorted set. To check rate limit: remove timestamps older than the window, count remaining entries, reject if > limit.\n\nMost accurate — no boundary artifacts. But memory cost is O(max_requests_per_window) per user. Redis sorted sets make this elegant."},
-  {id:"rl04",section:"Rate Limiting",tags:["rate-limiting"],source_url:"https://stripe.com/blog/rate-limiters",front:"What is the fixed window counter rate limiting algorithm and its major flaw?",back:"Increment a counter per time window (e.g., per minute). Reset at window boundary. Simple, O(1) memory.\n\nFlaw: boundary burst — a user can send N requests at 11:59:59 and N more at 12:00:00, for 2N requests in 2 seconds. Sliding window solves this."},
-  {id:"rl05",section:"Rate Limiting",tags:["rate-limiting","clay","clay-monday"],source_url:"https://stripe.com/blog/rate-limiters",front:"Why must rate limiting be enforced in a shared service rather than per-worker?",back:"Partner API rate limits are global — LinkedIn doesn't care how many workers Clay runs. If 50 workers each track 100 req/min, they collectively exhaust 5000 req/min without realizing it.\n\nShared service (Redis-backed rate limiter) provides a single source of truth for all workers. Every worker checks the same counter before making a partner API call."},
-  {id:"rl06",section:"Rate Limiting",tags:["rate-limiting","clay","clay-monday"],source_url:"https://stripe.com/blog/rate-limiters",front:"What are the three tiers of rate limiting in a multi-tenant enrichment platform like Clay?",back:"1. Global per-partner: e.g., LinkedIn 5000 req/min total across all Clay\n2. Per-partner per-customer: prevent one customer from starving others\n3. Per-customer overall: billing/quota enforcement\n\nCheck ALL three tiers on each request; deny if any exceeded."},
-  {id:"rl07",section:"Rate Limiting",tags:["rate-limiting"],source_url:"https://stripe.com/blog/rate-limiters",front:"What is circuit breaking, and how does it relate to rate limiting?",back:"Circuit breaker pattern: if downstream fails repeatedly, open the circuit (reject requests immediately) instead of hammering a failing service.\n\nStates: closed (normal), open (reject fast), half-open (probe recovery).\n\nRelated to but different from rate limiting: rate limiting prevents overload; circuit breaking prevents cascading failure when a dependency is already down."},
-  {id:"rl08",section:"Rate Limiting",tags:["rate-limiting"],source_url:"https://stripe.com/blog/rate-limiters",front:"What is the Redis command pattern for implementing token bucket rate limiting?",back:"Use a Lua script (atomic execution):\n1. GET current token count and last refill timestamp\n2. Calculate tokens added since last refill: min(max_tokens, tokens + rate * elapsed)\n3. If tokens ≥ 1: decrement and allow. Else: deny.\n4. SET new token count and timestamp\n\nMust be Lua (or MULTI/EXEC) to be atomic — no TOCTOU race."},
+  // SECTION 5 — RATE LIMITING
+  {id:"rl01",section:"Rate Limiting",tags:["rate-limiting"],front:"What is the token bucket algorithm for rate limiting?",back:"A bucket holds up to N tokens and refills at rate R tokens/second.\nEach request consumes one token.\nIf bucket is empty: reject (or queue) the request.\n\nAllows bursting up to N requests instantaneously. Refill rate controls steady-state throughput. Most common algorithm for API rate limits."},
+  {id:"rl02",section:"Rate Limiting",tags:["rate-limiting"],front:"What is the leaky bucket algorithm, and how does it differ from token bucket?",back:"Leaky bucket: requests enter a queue (the bucket); they're processed at a fixed rate (the leak). Requests that overflow are dropped.\n\nDifference: token bucket allows bursting (consume multiple tokens at once). Leaky bucket enforces constant output rate — smooths traffic. Token bucket is better for most APIs; leaky bucket for traffic shaping."},
+  {id:"rl03",section:"Rate Limiting",tags:["rate-limiting"],front:"What is the sliding window log algorithm for rate limiting?",back:"Store a timestamp for each request in a sorted set. To check rate limit: remove timestamps older than the window, count remaining entries, reject if > limit.\n\nMost accurate — no boundary artifacts. But memory cost is O(max_requests_per_window) per user. Redis sorted sets make this elegant."},
+  {id:"rl04",section:"Rate Limiting",tags:["rate-limiting"],front:"What is the fixed window counter rate limiting algorithm and its major flaw?",back:"Increment a counter per time window (e.g., per minute). Reset at window boundary. Simple, O(1) memory.\n\nFlaw: boundary burst — a user can send N requests at 11:59:59 and N more at 12:00:00, for 2N requests in 2 seconds. Sliding window solves this."},
+  {id:"rl05",section:"Rate Limiting",tags:["rate-limiting","clay"],front:"Why must rate limiting be enforced in a shared service rather than per-worker?",back:"Partner API rate limits are global — LinkedIn doesn't care how many workers Clay runs. If 50 workers each track 100 req/min, they collectively exhaust 5000 req/min without realizing it.\n\nShared service (Redis-backed rate limiter) provides a single source of truth for all workers. Every worker checks the same counter before making a partner API call."},
+  {id:"rl06",section:"Rate Limiting",tags:["rate-limiting","clay"],front:"What are the three tiers of rate limiting in a multi-tenant enrichment platform like Clay?",back:"1. Global per-partner: e.g., LinkedIn 5000 req/min total across all Clay\n2. Per-partner per-customer: prevent one customer from starving others\n3. Per-customer overall: billing/quota enforcement\n\nCheck ALL three tiers on each request; deny if any exceeded."},
+  {id:"rl07",section:"Rate Limiting",tags:["rate-limiting"],front:"What is circuit breaking, and how does it relate to rate limiting?",back:"Circuit breaker pattern: if downstream fails repeatedly, open the circuit (reject requests immediately) instead of hammering a failing service.\n\nStates: closed (normal), open (reject fast), half-open (probe recovery).\n\nRelated to but different from rate limiting: rate limiting prevents overload; circuit breaking prevents cascading failure when a dependency is already down."},
+  {id:"rl08",section:"Rate Limiting",tags:["rate-limiting","clay"],front:"What is the Redis command pattern for implementing token bucket rate limiting?",back:"Use a Lua script (atomic execution):\n1. GET current token count and last refill timestamp\n2. Calculate tokens added since last refill: min(max_tokens, tokens + rate * elapsed)\n3. If tokens ≥ 1: decrement and allow. Else: deny.\n4. SET new token count and timestamp\n\nMust be Lua (or MULTI/EXEC) to be atomic — no TOCTOU race."},
 
-  // ============================================================
-  // SECTION 6 — IDENTITY RESOLUTION & DEDUP
-  // ============================================================
+  // SECTION 6 — IDENTITY & DEDUP
   {id:"id01",section:"Identity & Dedup",tags:["identity-resolution","clay"],front:"What is entity resolution (record linkage), and why is it hard?",back:"Entity resolution identifies when records across systems refer to the same real-world entity (e.g., 'Apple Inc.' vs 'apple.com' vs 'Apple').\n\nHard because: names are ambiguous, data is messy, false positives and false negatives both have costs, scale is O(N²) if you compare everything naively."},
   {id:"id02",section:"Identity & Dedup",tags:["identity-resolution","clay"],front:"What is the blocking step in entity resolution, and why is it necessary?",back:"Blocking groups records into 'buckets' so you only compare records within the same bucket — reducing O(N²) comparisons to O(N·K) where K is average bucket size.\n\nCommon blocking keys: company domain, first 3 chars of name, LinkedIn ID. Any two records with NO blocking key in common are assumed non-matches."},
   {id:"id03",section:"Identity & Dedup",tags:["identity-resolution"],front:"What is fuzzy string matching, and name two algorithms used in record linkage?",back:"Fuzzy matching measures string similarity rather than exact equality.\n\n1. Levenshtein distance: min edits (insert, delete, replace) to transform one string to another. O(m*n).\n2. Jaro-Winkler: optimized for names, weights common prefix. Used in census record linkage.\n\nAlso: trigram similarity (pg_trgm in Postgres), soundex/metaphone for phonetic matching."},
   {id:"id04",section:"Identity & Dedup",tags:["identity-resolution","clay"],front:"How would you use Postgres to implement fuzzy company name matching at scale?",back:"1. Install pg_trgm extension\n2. Create a GIN index on trigrams: CREATE INDEX idx_trgm ON companies USING gin(name gin_trgm_ops)\n3. Query: SELECT * FROM companies WHERE similarity(name, 'Stripe Inc') > 0.5 ORDER BY similarity DESC LIMIT 5\n\nGIN + trgm enables sub-second fuzzy search on millions of records."},
-  {id:"id05",section:"Identity & Dedup",tags:["identity-resolution","clay","clay-monday"],front:"Where does identity resolution sit in a data enrichment pipeline, and why does placement matter?",back:"Identity resolution happens BEFORE the cache lookup.\n\nWhy: normalize all representations ('Stripe', 'stripe.com', 'Stripe Inc.') to a canonical_id first, then check cache by canonical_id. Without this, you get 3 cache entries for the same company — tripling API calls and wasting cache."},
+  {id:"id05",section:"Identity & Dedup",tags:["identity-resolution","clay"],front:"Where does identity resolution sit in a data enrichment pipeline, and why does placement matter?",back:"Identity resolution happens BEFORE the cache lookup.\n\nWhy: normalize all representations ('Stripe', 'stripe.com', 'Stripe Inc.') to a canonical_id first, then check cache by canonical_id. Without this, you get 3 cache entries for the same company — tripling API calls and wasting cache."},
   {id:"id06",section:"Identity & Dedup",tags:["identity-resolution"],front:"What is a Bloom filter, and how would you use it in a deduplication pipeline?",back:"Bloom filter: probabilistic set membership structure. 'Definitely not in set' or 'maybe in set.' False positives possible; false negatives impossible.\n\nDedup use: before expensive DB lookup, check Bloom filter if URL/ID was already processed. If 'definitely not': skip DB, process. If 'maybe': do precise DB lookup.\n\nMemory: ~10 bits per element at 1% false positive rate."},
 
-  // ============================================================
   // SECTION 7 — CANONICAL PROBLEMS
-  // ============================================================
-  {id:"cp01",section:"Canonical Problems",tags:["scalability","storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"Design a URL shortener (like bit.ly). What are the key design decisions?",back:"1. ID generation: base62 encode a counter (7 chars → 3.5T URLs), or hash + collision handling\n2. Storage: KV store (short_code → original_url, expiry, click_count)\n3. Redirect: 301 (browser caches, fewer hits) vs 302 (every visit tracked) — pick 302 for analytics\n4. Scale: Redis cache for hot URLs; CDN edge for redirect\n5. Custom aliases: store in same table with unique constraint\n\nBottleneck: reads >> writes, so cache aggressively."},
-  {id:"cp02",section:"Canonical Problems",tags:["scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"Design a web crawler. What are the main components and their challenges?",back:"Components: Frontier (URL queue) → Fetcher → Parser → Storage → Dedup filter\n\nChallenges:\n- Politeness: don't hammer one domain (per-domain rate limit queues)\n- Dedup: Bloom filter or hash set of seen URLs\n- Cycles: canonical URL normalization\n- Scale: distributed BFS; partition by domain hash\n- Freshness: priority queue weighted by PageRank / update frequency"},
-  {id:"cp03",section:"Canonical Problems",tags:["scalability","messaging"],source_url:"https://github.com/donnemartin/system-design-primer",front:"Design a news feed (like Twitter's home timeline). What are the two main fanout strategies?",back:"Fanout on write (push): when user posts, immediately write to all followers' feed caches. Fast reads, slow/expensive writes for celebrities.\n\nFanout on read (pull): feed is assembled at read time by merging posts from followees. Always fresh, but read is slow (N DB calls).\n\nHybrid (Twitter): fanout on write for normal users; fanout on read for celebrities. Merge at read time."},
-  {id:"cp04",section:"Canonical Problems",tags:["rate-limiting","scalability"],source_url:"https://stripe.com/blog/rate-limiters",front:"Design a rate limiter service. What's the API, storage, and key tradeoff?",back:"API: isAllowed(user_id, action) → bool\nStorage: Redis sorted set (sliding window) or Redis string with TTL (fixed window)\n\nKey tradeoff: accuracy vs memory\n- Fixed window: O(1) per user, boundary burst flaw\n- Sliding window log: O(requests) per user, accurate\n- Sliding window counter: O(1), approximate (interpolates)\n\nFor distributed: Redis is shared state; use Lua scripts for atomicity."},
-  {id:"cp05",section:"Canonical Problems",tags:["messaging","scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"Design a chat system (like Slack/WhatsApp). What delivery mechanism do you use for real-time messages?",back:"Delivery: WebSocket — persistent bidirectional connection. Server pushes messages without polling.\n\nArchitecture: Chat service → message stored in Cassandra (wide rows, chat_id as partition key) → fan out to recipient's WebSocket connection via presence service.\n\nOffline delivery: store in inbox; deliver on reconnect.\nRead receipts: lightweight ack events back to server."},
-  {id:"cp06",section:"Canonical Problems",tags:["scalability","storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"Design a search autocomplete system. What data structures power the suggestions?",back:"Trie: stores all prefixes, O(L) lookup (L = prefix length). High memory for large vocabularies.\n\nBetter at scale: precompute top-K suggestions per prefix (offline, MapReduce/Spark), store in a fast KV store (Redis). Each prefix key → JSON list of suggestions.\n\nUpdating: batch recompute nightly; optionally stream real-time popular queries to adjust weights."},
-  {id:"cp07",section:"Canonical Problems",tags:["scalability","storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"Design a payment system. What are the critical properties and how do you ensure exactly-once?",back:"Critical: idempotency (never double-charge), atomicity, auditability.\n\n1. Client generates idempotency key (UUID) per transaction\n2. Server checks if key already processed → return cached result\n3. Atomic debit+credit in same transaction\n4. Append-only ledger (event sourcing): never update balance directly, sum of events is truth\n5. Two-phase: reserve funds → confirm. Rollback on failure."},
-  {id:"cp08",section:"Canonical Problems",tags:["storage","scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"Design a key-value store. What are the three main storage engine choices and their tradeoffs?",back:"1. In-memory only (Redis): fastest, loses data on crash. Add persistence via RDB snapshots or AOF log.\n2. Log-structured (Bitcask, RocksDB): all writes to append-only log + in-memory index. Great write perf, compaction overhead.\n3. B-tree (LevelDB predecessors): good read, more write overhead.\n\nFor distributed KV: consistent hashing for sharding + replication (Dynamo model)."},
-  {id:"cp09",section:"Canonical Problems",tags:["messaging","scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"Design a notification system. What are the key components and failure modes?",back:"Components: Event source → Notification Service → Delivery workers per channel (push, email, SMS) → Delivery tracking\n\nFailure modes:\n- Message lost: use durable queue (SQS/Kafka), ack only after delivery\n- Duplicate notification: idempotency key + dedup check before send\n- Delivery failure: DLQ + retry with exponential backoff\n- User preference: pre-filter by user notification settings before queueing"},
-  {id:"cp10",section:"Canonical Problems",tags:["messaging","scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"Design a distributed job queue. What are the guarantees and how do you handle worker failure?",back:"Guarantees needed: at-least-once delivery, job visibility (locked by one worker).\n\nPattern: job claim with visibility timeout — worker takes job and sets timeout. If worker crashes, job becomes visible again after timeout and is retried.\n\nImplementation: SQS visibility timeout, or DB table with (job_id, status, locked_until, worker_id). Worker heartbeats to extend lock."},
-  {id:"cp11",section:"Canonical Problems",tags:["scalability","storage"],source_url:"https://github.com/donnemartin/system-design-primer",front:"Design a ride-sharing location service. How do you efficiently store and query driver locations?",back:"Challenge: millions of location updates/second; find nearest drivers in real-time.\n\nStorage: not a relational DB. Use:\n- Geohash: encode lat/lng as string prefix; nearby cells share prefix\n- Redis GEOADD / GEORADIUS: built-in geo commands with sorted set under the hood\n- S2 cells (Google's approach): hierarchical cell decomposition\n\nStore current location in Redis (fast); archive to Postgres/Cassandra for history."},
+  {id:"cp01",section:"Canonical Problems",tags:["scalability","storage"],front:"Design a URL shortener (like bit.ly). What are the key design decisions?",back:"1. ID generation: base62 encode a counter (7 chars → 3.5T URLs), or hash + collision handling\n2. Storage: KV store (short_code → original_url, expiry, click_count)\n3. Redirect: 301 (browser caches, fewer hits) vs 302 (every visit tracked) — pick 302 for analytics\n4. Scale: Redis cache for hot URLs; CDN edge for redirect\n5. Custom aliases: store in same table with unique constraint\n\nBottleneck: reads >> writes, so cache aggressively."},
+  {id:"cp02",section:"Canonical Problems",tags:["scalability","storage"],front:"Design a web crawler. What are the main components and their challenges?",back:"Components: Frontier (URL queue) → Fetcher → Parser → Storage → Dedup filter\n\nChallenges:\n- Politeness: don't hammer one domain (per-domain rate limit queues)\n- Dedup: Bloom filter or hash set of seen URLs\n- Cycles: canonical URL normalization\n- Scale: distributed BFS; partition by domain hash\n- Freshness: priority queue weighted by PageRank / update frequency"},
+  {id:"cp03",section:"Canonical Problems",tags:["scalability","messaging"],front:"Design a news feed (like Twitter's home timeline). What are the two main fanout strategies?",back:"Fanout on write (push): when user posts, immediately write to all followers' feed caches. Fast reads, slow/expensive writes for celebrities.\n\nFanout on read (pull): feed is assembled at read time by merging posts from followees. Always fresh, but read is slow (N DB calls).\n\nHybrid (Twitter): fanout on write for normal users; fanout on read for celebrities. Merge at read time."},
+  {id:"cp04",section:"Canonical Problems",tags:["rate-limiting","scalability"],front:"Design a rate limiter service. What's the API, storage, and key tradeoff?",back:"API: isAllowed(user_id, action) → bool\nStorage: Redis sorted set (sliding window) or Redis string with TTL (fixed window)\n\nKey tradeoff: accuracy vs memory\n- Fixed window: O(1) per user, boundary burst flaw\n- Sliding window log: O(requests) per user, accurate\n- Sliding window counter: O(1), approximate (interpolates)\n\nFor distributed: Redis is shared state; use Lua scripts for atomicity."},
+  {id:"cp05",section:"Canonical Problems",tags:["scalability","messaging"],front:"Design a chat system (like Slack/WhatsApp). What delivery mechanism do you use for real-time messages?",back:"Delivery: WebSocket — persistent bidirectional connection. Server pushes messages without polling.\n\nArchitecture: Chat service → message stored in Cassandra (wide rows, chat_id as partition key) → fan out to recipient's WebSocket connection via presence service.\n\nOffline delivery: store in inbox; deliver on reconnect.\nRead receipts: lightweight ack events back to server."},
+  {id:"cp06",section:"Canonical Problems",tags:["scalability","storage"],front:"Design a search autocomplete system. What data structures power the suggestions?",back:"Trie: stores all prefixes, O(L) lookup (L = prefix length). High memory for large vocabularies.\n\nBetter at scale: precompute top-K suggestions per prefix (offline, MapReduce/Spark), store in a fast KV store (Redis). Each prefix key → JSON list of suggestions.\n\nUpdating: batch recompute nightly; optionally stream real-time popular queries to adjust weights."},
+  {id:"cp07",section:"Canonical Problems",tags:["scalability","storage"],front:"Design a payment system. What are the critical properties and how do you ensure exactly-once?",back:"Critical: idempotency (never double-charge), atomicity, auditability.\n\n1. Client generates idempotency key (UUID) per transaction\n2. Server checks if key already processed → return cached result\n3. Atomic debit+credit in same transaction\n4. Append-only ledger (event sourcing): never update balance directly, sum of events is truth\n5. Two-phase: reserve funds → confirm. Rollback on failure."},
+  {id:"cp08",section:"Canonical Problems",tags:["storage"],front:"Design a key-value store. What are the three main storage engine choices and their tradeoffs?",back:"1. In-memory only (Redis): fastest, loses data on crash. Add persistence via RDB snapshots or AOF log.\n2. Log-structured (Bitcask, RocksDB): all writes to append-only log + in-memory index. Great write perf, compaction overhead.\n3. B-tree (LevelDB predecessors): good read, more write overhead.\n\nFor distributed KV: consistent hashing for sharding + replication (Dynamo model)."},
+  {id:"cp09",section:"Canonical Problems",tags:["messaging","scalability"],front:"Design a notification system. What are the key components and failure modes?",back:"Components: Event source → Notification Service → Delivery workers per channel (push, email, SMS) → Delivery tracking\n\nFailure modes:\n- Message lost: use durable queue (SQS/Kafka), ack only after delivery\n- Duplicate notification: idempotency key + dedup check before send\n- Delivery failure: DLQ + retry with exponential backoff\n- User preference: pre-filter by user notification settings before queueing"},
+  {id:"cp10",section:"Canonical Problems",tags:["messaging","scalability"],front:"Design a distributed job queue. What are the guarantees and how do you handle worker failure?",back:"Guarantees needed: at-least-once delivery, job visibility (locked by one worker).\n\nPattern: job claim with visibility timeout — worker takes job and sets timeout. If worker crashes, job becomes visible again after timeout and is retried.\n\nImplementation: SQS visibility timeout, or DB table with (job_id, status, locked_until, worker_id). Worker heartbeats to extend lock."},
+  {id:"cp11",section:"Canonical Problems",tags:["storage","scalability"],front:"Design a ride-sharing location service. How do you efficiently store and query driver locations?",back:"Challenge: millions of location updates/second; find nearest drivers in real-time.\n\nStorage: not a relational DB. Use:\n- Geohash: encode lat/lng as string prefix; nearby cells share prefix\n- Redis GEOADD / GEORADIUS: built-in geo commands with sorted set under the hood\n- S2 cells (Google's approach): hierarchical cell decomposition\n\nStore current location in Redis (fast); archive to Postgres/Cassandra for history."},
   {id:"cp12",section:"Canonical Problems",tags:["interview-meta"],front:"What is the Alex Xu system design interview framework? Walk through the four steps.",back:"1. Understand the problem (3-5 min): functional requirements, non-functional (scale, latency, consistency), constraints. Don't assume.\n2. High-level design (10-15 min): draw the happy path. API, storage, components. Get interviewer buy-in.\n3. Deep dive (10-15 min): pick 1-2 components. Go deep. Tradeoffs.\n4. Wrap up (3-5 min): bottlenecks, monitoring, further improvements, recap.\n\nAlways talk while drawing. Silence = lost points."},
 
-  // ============================================================
   // SECTION 8 — CLAY-SPECIFIC
-  // ============================================================
-  {id:"cl01",section:"Clay-Specific",tags:["clay","clay-monday"],source_url:"https://clay.com",front:"What is Clay's primary backend language and runtime?",back:"TypeScript + Python on Node.js runtime"},
-  {id:"cl02",section:"Clay-Specific",tags:["clay","clay-monday"],source_url:"https://clay.com",front:"What is Clay's OLTP database?",back:"Postgres via AWS Aurora"},
-  {id:"cl03",section:"Clay-Specific",tags:["clay","clay-monday"],source_url:"https://clay.com",front:"What cache layer does Clay use?",back:"Redis via AWS Elasticache"},
-  {id:"cl04",section:"Clay-Specific",tags:["clay","clay-monday"],source_url:"https://clay.com",front:"What container platform does Clay run on?",back:"AWS ECS Fargate (NOT Kubernetes)"},
-  {id:"cl05",section:"Clay-Specific",tags:["clay","clay-monday"],source_url:"https://clay.com",front:"What are Clay's observability tools?",back:"Datadog + CloudWatch + Mezmo"},
-  {id:"cl06",section:"Clay-Specific",tags:["clay","clay-monday","scalability"],source_url:"https://clay.com",front:"What two scaling problems does Clay publicly call out in job postings?",back:"1. Node.js event loop blockages (CPU-bound work blocking async I/O)\n2. Sharding Postgres and Redis as data grows"},
-  {id:"cl07",section:"Clay-Specific",tags:["clay"],source_url:"https://clay.com",front:"What is Clay's IaC tool?",back:"Terraform"},
-  {id:"cl08",section:"Clay-Specific",tags:["clay"],source_url:"https://clay.com",front:"What is Clay's API style?",back:"REST/JSON (no GraphQL)"},
-  {id:"cl09",section:"Clay-Specific",tags:["clay","clay-monday","stars"],source_url:"https://clay.com",front:"What is the core Clay product, and what problem does it solve?",back:"Clay is a data enrichment and outbound automation platform. It pulls data about companies and people from 75+ sources (LinkedIn, Crunchbase, Apollo, etc.) and enriches records for sales teams.\n\nCore problem: sales teams waste time manually researching leads. Clay automates that enrichment pipeline."},
-  {id:"cl10",section:"Clay-Specific",tags:["clay","clay-monday","scalability","rate-limiting","identity-resolution","stars"],source_url:"https://clay.com",front:"Walk through what happens in Clay's architecture when a user uploads a CSV with 10,000 company names.",back:"1. API ingestion → rows stored in Postgres with job_id\n2. Rows enqueued to SQS work queue\n3. ECS Fargate workers pop rows\n4. For each row: resolve company name → canonical_id (Postgres + pg_trgm)\n5. Check Redis cache for canonical_id\n6. Cache miss: enqueue to per-source dispatcher; dispatcher checks rate-limit token bucket; fires API\n7. API response stored in cache + result written to job output table\n8. Webhook/poll for job completion"},
-  {id:"cl11",section:"Clay-Specific",tags:["clay","clay-monday","scalability"],source_url:"https://clay.com",front:"Why is Node.js event loop blocking a specific risk for Clay, and how do you fix it?",back:"Node.js is single-threaded. CPU-intensive work (JSON parsing, fuzzy matching) blocks the event loop, preventing I/O callbacks from running → latency spike for all concurrent requests.\n\nFixes:\n1. Move CPU work to worker_threads (Node.js workers)\n2. Move heavy computation to a separate service (Python with multiprocessing)\n3. Use async I/O for everything — never block the loop with sync operations"},
-  {id:"cl12",section:"Clay-Specific",tags:["clay","clay-monday","interview-meta"],source_url:"https://clay.com",front:"What vocabulary should you naturally drop in the Clay system design interview?",back:"'Postgres sharded by canonical_id hash, Elasticache Redis for rate-limit token buckets, ECS Fargate workers popping from SQS, pg_trgm for fuzzy entity resolution, Datadog for observability'\n\nUsing their exact stack shows you did your homework and think in their context."},
+  {id:"cl01",section:"Clay-Specific",tags:["clay"],front:"What is Clay's primary backend language and runtime?",back:"TypeScript + Python on Node.js runtime"},
+  {id:"cl02",section:"Clay-Specific",tags:["clay"],front:"What is Clay's OLTP database?",back:"Postgres via AWS Aurora"},
+  {id:"cl03",section:"Clay-Specific",tags:["clay"],front:"What cache layer does Clay use?",back:"Redis via AWS Elasticache"},
+  {id:"cl04",section:"Clay-Specific",tags:["clay"],front:"What container platform does Clay run on?",back:"AWS ECS Fargate (NOT Kubernetes)"},
+  {id:"cl05",section:"Clay-Specific",tags:["clay"],front:"What are Clay's observability tools?",back:"Datadog + CloudWatch + Mezmo"},
+  {id:"cl06",section:"Clay-Specific",tags:["clay","scalability"],front:"What two scaling problems does Clay publicly call out in job postings?",back:"1. Node.js event loop blockages (CPU-bound work blocking async I/O)\n2. Sharding Postgres and Redis as data grows"},
+  {id:"cl07",section:"Clay-Specific",tags:["clay"],front:"What is Clay's IaC tool?",back:"Terraform"},
+  {id:"cl08",section:"Clay-Specific",tags:["clay"],front:"What is Clay's API style?",back:"REST/JSON (no GraphQL)"},
+  {id:"cl09",section:"Clay-Specific",tags:["clay","clay-monday"],front:"What is the core Clay product, and what problem does it solve?",back:"Clay is a data enrichment and outbound automation platform. It pulls data about companies and people from 75+ sources (LinkedIn, Crunchbase, Apollo, etc.) and enriches records for sales teams.\n\nCore problem: sales teams waste time manually researching leads. Clay automates that enrichment pipeline."},
+  {id:"cl10",section:"Clay-Specific",tags:["clay","clay-monday","identity-resolution","rate-limiting"],front:"Walk through what happens in Clay's architecture when a user uploads a CSV with 10,000 company names.",back:"1. API ingestion → rows stored in Postgres with job_id\n2. Rows enqueued to SQS work queue\n3. ECS Fargate workers pop rows\n4. For each row: resolve company name → canonical_id (Postgres + pg_trgm)\n5. Check Redis cache for canonical_id\n6. Cache miss: enqueue to per-source dispatcher; dispatcher checks rate-limit token bucket; fires API\n7. API response stored in cache + result written to job output table\n8. Webhook/poll for job completion"},
+  {id:"cl11",section:"Clay-Specific",tags:["clay","clay-monday","scalability"],front:"Why is Node.js event loop blocking a specific risk for Clay, and how do you fix it?",back:"Node.js is single-threaded. CPU-intensive work (JSON parsing, fuzzy matching) blocks the event loop, preventing I/O callbacks from running → latency spike for all concurrent requests.\n\nFixes:\n1. Move CPU work to worker_threads (Node.js workers)\n2. Move heavy computation to a separate service (Python with multiprocessing)\n3. Use async I/O for everything — never block the loop with sync operations"},
+  {id:"cl12",section:"Clay-Specific",tags:["clay","clay-monday"],front:"What vocabulary should you naturally drop in the Clay system design interview?",back:"'Postgres sharded by canonical_id hash, Elasticache Redis for rate-limit token buckets, ECS Fargate workers popping from SQS, pg_trgm for fuzzy entity resolution, Datadog for observability'\n\nUsing their exact stack shows you did your homework and think in their context."},
 
-  // ============================================================
   // SECTION 9 — INTERVIEW META
-  // ============================================================
   {id:"meta01",section:"Interview Meta",tags:["interview-meta"],front:"What are the five phases of a system design interview and their recommended time splits?",back:"1. Clarify requirements — 5 min (functional + non-functional)\n2. Capacity estimation — 5 min (back-of-envelope QPS, storage, bandwidth)\n3. High-level design — 15 min (draw boxes, define APIs, pick storage)\n4. Deep dive — 15 min (1-2 hot components, tradeoffs)\n5. Bottlenecks & wrap-up — 5 min (failure modes, monitoring, future improvements)"},
   {id:"meta02",section:"Interview Meta",tags:["interview-meta"],front:"What is the FIRST question you must ask in any system design interview?",back:"What are the functional AND non-functional requirements?\n\nFunctional: what does the system do? (features, use cases)\nNon-functional: latency target? consistency requirement? scale (DAU, QPS)? availability SLA? geographic distribution?\n\nNever start designing before you know: scale + consistency model. These determine everything."},
-  {id:"meta03",section:"Interview Meta",tags:["interview-meta","stars"],front:"What is Sahar's specific system design gap to watch for?",back:"'Ideas-to-whiteboard translation' — STOP clarifying endlessly and START drawing.\n\nExternalize the design visually. Get SOMETHING on the board, then refine. Silence while thinking = lost signal to interviewer. Narrate as you draw."},
-  {id:"meta04",section:"Interview Meta",tags:["interview-meta","scalability"],front:"What does an interviewer probe when they ask 'how would this scale to 10x traffic?'",back:"They want to see:\n1. You identify the bottleneck (DB? cache? network?)\n2. You propose a targeted solution (sharding, replica, CDN, async) not 'bigger machines'\n3. You name the tradeoff the solution introduces\n4. You consider operational complexity\n\nNot looking for: a magic answer. Looking for: structured reasoning under uncertainty."},
+  {id:"meta03",section:"Interview Meta",tags:["interview-meta","clay-monday"],front:"What is Sahar's specific system design gap to watch for?",back:"'Ideas-to-whiteboard translation' — STOP clarifying endlessly and START drawing.\n\nExternalize the design visually. Get SOMETHING on the board, then refine. Silence while thinking = lost signal to interviewer. Narrate as you draw."},
+  {id:"meta04",section:"Interview Meta",tags:["interview-meta"],front:"What does an interviewer probe when they ask 'how would this scale to 10x traffic?'",back:"They want to see:\n1. You identify the bottleneck (DB? cache? network?)\n2. You propose a targeted solution (sharding, replica, CDN, async) not 'bigger machines'\n3. You name the tradeoff the solution introduces\n4. You consider operational complexity\n\nNot looking for: a magic answer. Looking for: structured reasoning under uncertainty."},
   {id:"meta05",section:"Interview Meta",tags:["interview-meta"],front:"What is a back-of-envelope calculation, and walk through an example for a URL shortener.",back:"Quick estimation to size the system before designing.\n\nURL shortener example (Alex Xu):\n- 100M URLs/day created → ~1,200 writes/sec\n- 10:1 read:write → 12,000 reads/sec\n- 5 years × 100M × 365 = 182.5B records\n- Each record ~500 bytes → ~91TB storage\n\nConclusions: reads are 10x writes → cache heavily. 100K QPS = needs sharding."},
   {id:"meta06",section:"Interview Meta",tags:["interview-meta"],front:"What are the most common tradeoffs interviewers want to hear you articulate?",back:"1. Consistency vs availability (CAP)\n2. Latency vs durability (in-memory vs disk)\n3. Complexity vs scale (normalized vs denormalized)\n4. Cost vs performance (more replicas = $)\n5. Strong consistency vs eventual + convergence time\n6. Pull vs push (fanout on read vs write)\n\nFormat: 'I'd choose X because [specific reason], and the cost is [specific tradeoff]."},
-  {id:"meta07",section:"Interview Meta",tags:["interview-meta","scalability"],front:"What does 'hot spot' mean in the context of a sharded database, and how do you fix it?",back:"Hot spot: one shard receives disproportionate traffic because many keys hash to it — often due to shard key choice (e.g., timestamp → all recent writes go to one shard).\n\nFixes:\n1. Choose better shard key (user_id or entity hash distributes evenly)\n2. Add suffix to shard key for celebrities/viral content\n3. Use virtual nodes to remap hot shards to more physical nodes"},
-  {id:"meta08",section:"Interview Meta",tags:["interview-meta","scalability"],front:"How do you handle the 'celeb problem' (hot user) in a social graph system?",back:"A celebrity with 100M followers: fanout on write would require 100M writes per post.\n\nStrategies:\n1. Hybrid fanout: write only to active followers on write; merge celebrity's feed on read\n2. Cache: pre-cache celebrity's recent posts separately from follower feed\n3. Pull model for celebrities only: at read time, merge their last N posts into the user's feed\n\nTrade-off: more read complexity for unbounded write amplification."},
+  {id:"meta07",section:"Interview Meta",tags:["interview-meta"],front:"What does 'hot spot' mean in the context of a sharded database, and how do you fix it?",back:"Hot spot: one shard receives disproportionate traffic because many keys hash to it — often due to shard key choice (e.g., timestamp → all recent writes go to one shard).\n\nFixes:\n1. Choose better shard key (user_id or entity hash distributes evenly)\n2. Add suffix to shard key for celebrities/viral content\n3. Use virtual nodes to remap hot shards to more physical nodes"},
+  {id:"meta08",section:"Interview Meta",tags:["interview-meta"],front:"How do you handle the 'celeb problem' (hot user) in a social graph system?",back:"A celebrity with 100M followers: fanout on write would require 100M writes per post.\n\nStrategies:\n1. Hybrid fanout: write only to active followers on write; merge celebrity's feed on read\n2. Cache: pre-cache celebrity's recent posts separately from follower feed\n3. Pull model for celebrities only: at read time, merge their last N posts into the user's feed\n\nTrade-off: more read complexity for unbounded write amplification."},
   {id:"meta09",section:"Interview Meta",tags:["interview-meta"],front:"What are the key differences between an IC system design interview and an EM system design interview?",back:"IC focus: technical depth, specific algorithms/data structures, implementation tradeoffs, concrete numbers, failure modes.\n\nEM focus: all of the above PLUS: team structure, operational concerns, build vs buy, monitoring/alerting, how you'd onboard engineers, migration strategy, stakeholder tradeoffs.\n\nEM interviews reward: 'here's how I'd structure the team to own this component' alongside technical design."},
   {id:"meta10",section:"Interview Meta",tags:["interview-meta"],front:"When asked 'what monitoring would you add?', what's the right answer format?",back:"Cover three layers:\n1. Infrastructure: CPU, memory, disk I/O, network latency per service\n2. Application: error rate, p50/p95/p99 latency, throughput (requests/sec), queue depth\n3. Business: successful enrichments/min, cache hit rate, partner API budget remaining\n\nAlert on: error rate spikes, p99 latency crossing SLA, queue depth growing unboundedly, any partner rate limit approaching 80%."},
-  {id:"meta11",section:"Interview Meta",tags:["interview-meta","clay","clay-monday"],front:"How do you talk about a system you've actually built versus one you're designing from scratch in an interview?",back:"When you've built it: lead with 'here's what we actually did and why.' Interviewers love real war stories — specifics > theory.\n\nFormat: 'At [company], we had [problem]. We first tried [X] but hit [issue]. We then did [Y] which solved it but introduced [tradeoff]. If doing it again, I'd [improvement].'\n\nReal systems evidence > hypothetical design. Use your Clay prep knowledge this way."},
+  {id:"meta11",section:"Interview Meta",tags:["interview-meta"],front:"How do you talk about a system you've actually built versus one you're designing from scratch in an interview?",back:"When you've built it: lead with 'here's what we actually did and why.' Interviewers love real war stories — specifics > theory.\n\nFormat: 'At [company], we had [problem]. We first tried [X] but hit [issue]. We then did [Y] which solved it but introduced [tradeoff]. If doing it again, I'd [improvement].'\n\nReal systems evidence > hypothetical design. Use your Clay prep knowledge this way."},
 
-  // ============================================================
-  // SECTION 10 — DDIA (Kleppmann) KEY CONCEPTS
-  // ============================================================
-  {id:"ddia01",section:"DDIA Concepts",tags:["scalability","storage"],front:"What is the difference between a single-leader and a multi-leader replication topology? When is each appropriate?",back:"Single-leader: all writes go to one primary; replicated to followers. Simple, consistent. Good for: most web apps.\n\nMulti-leader: writes accepted at any node (or select leaders per datacenter). Enables local writes in each region. Complex conflict resolution needed.\n\nUse multi-leader for: geo-distributed apps where cross-DC write latency is unacceptable (e.g., collaborative editing, calendar sync)."},
-  {id:"ddia02",section:"DDIA Concepts",tags:["scalability","storage"],front:"What is leaderless replication (Dynamo model), and how do quorums work?",back:"Any replica can accept writes. Reads and writes go to multiple replicas.\n\nQuorum: W + R > N ensures overlap. With N=3, W=2, R=2: every read will include at least one node with the latest write.\n\nTrade-off: no single failure point, tunable consistency. But concurrent writes may conflict and require resolution (last-write-wins, vector clocks, merge functions)."},
+  // SECTION 10 — DDIA CONCEPTS
+  {id:"ddia01",section:"DDIA Concepts",tags:["storage","scalability"],front:"What is the difference between a single-leader and a multi-leader replication topology? When is each appropriate?",back:"Single-leader: all writes go to one primary; replicated to followers. Simple, consistent. Good for: most web apps.\n\nMulti-leader: writes accepted at any node (or select leaders per datacenter). Enables local writes in each region. Complex conflict resolution needed.\n\nUse multi-leader for: geo-distributed apps where cross-DC write latency is unacceptable (e.g., collaborative editing, calendar sync)."},
+  {id:"ddia02",section:"DDIA Concepts",tags:["storage","scalability"],front:"What is leaderless replication (Dynamo model), and how do quorums work?",back:"Any replica can accept writes. Reads and writes go to multiple replicas.\n\nQuorum: W + R > N ensures overlap. With N=3, W=2, R=2: every read will include at least one node with the latest write.\n\nTrade-off: no single failure point, tunable consistency. But concurrent writes may conflict and require resolution (last-write-wins, vector clocks, merge functions)."},
   {id:"ddia03",section:"DDIA Concepts",tags:["scalability"],front:"What is a vector clock, and what problem does it solve in distributed systems?",back:"A vector clock is a per-node counter array that captures causal ordering of events. Each node increments its own counter on event; merges on communication.\n\nSolves: disambiguating concurrent vs causally-ordered events. If V1 < V2, V2 happened after V1. If neither ≤ the other: concurrent conflict → needs resolution.\n\nUsed in: DynamoDB, Riak for conflict detection."},
   {id:"ddia04",section:"DDIA Concepts",tags:["storage","messaging"],front:"What is an event sourcing pattern, and how does it differ from traditional CRUD?",back:"Event sourcing: state is derived from an append-only log of events. Current state = replay of all events.\n\nTraditional CRUD: current state is stored directly; history lost.\n\nBenefits: full audit log, can replay to any point in time, easy to derive new projections from same events.\n\nCost: replay can be slow (snapshots help), eventual consistency of read models (CQRS), more complex reads."},
-  {id:"ddia05",section:"DDIA Concepts",tags:["storage","messaging"],front:"What is CQRS, and why is it often paired with event sourcing?",back:"CQRS (Command Query Responsibility Segregation): separate the write model (commands) from the read model (queries).\n\nPaired with event sourcing: events update the write log; one or more read projections are built asynchronously from the event stream. Each projection is optimized for its query pattern.\n\nTrade-off: eventual consistency between write and read models; higher complexity; better read performance at scale."},
-  {id:"ddia06",section:"DDIA Concepts",tags:["scalability","storage"],front:"What is the difference between optimistic and pessimistic concurrency control?",back:"Optimistic: assume conflicts are rare. Read data, compute, then write with a CAS check (e.g., WHERE version = old_version). If check fails, retry. Good for low-contention.\n\nPessimistic: lock the row before reading. No concurrent modification possible. Good for high-contention or complex multi-step transactions. Cost: lock contention, potential deadlocks."},
-  {id:"ddia07",section:"DDIA Concepts",tags:["scalability"],front:"What is linearizability, and why is it different from serializability?",back:"Linearizability (strong consistency): operations appear to take effect atomically at a single point in time. External observer sees a single consistent timeline.\n\nSerializability: concurrent transactions produce the same result as some serial execution. About transactions (groups of ops), not individual operations.\n\nStrict serializability = both. Most systems offer one or the other, not both."},
+  {id:"ddia05",section:"DDIA Concepts",tags:["storage"],front:"What is CQRS, and why is it often paired with event sourcing?",back:"CQRS (Command Query Responsibility Segregation): separate the write model (commands) from the read model (queries).\n\nPaired with event sourcing: events update the write log; one or more read projections are built asynchronously from the event stream. Each projection is optimized for its query pattern.\n\nTrade-off: eventual consistency between write and read models; higher complexity; better read performance at scale."},
+  {id:"ddia06",section:"DDIA Concepts",tags:["storage"],front:"What is the difference between optimistic and pessimistic concurrency control?",back:"Optimistic: assume conflicts are rare. Read data, compute, then write with a CAS check (e.g., WHERE version = old_version). If check fails, retry. Good for low-contention.\n\nPessimistic: lock the row before reading. No concurrent modification possible. Good for high-contention or complex multi-step transactions. Cost: lock contention, potential deadlocks."},
+  {id:"ddia07",section:"DDIA Concepts",tags:["storage"],front:"What is linearizability, and why is it different from serializability?",back:"Linearizability (strong consistency): operations appear to take effect atomically at a single point in time. External observer sees a single consistent timeline.\n\nSerializability: concurrent transactions produce the same result as some serial execution. About transactions (groups of ops), not individual operations.\n\nStrict serializability = both. Most systems offer one or the other, not both."},
   {id:"ddia08",section:"DDIA Concepts",tags:["storage","messaging"],front:"What is change data capture (CDC) and what is it used for?",back:"CDC reads the database's replication log (e.g., Postgres WAL) and publishes every row change as an event stream.\n\nUse cases:\n- Sync DB changes to Elasticsearch (search index)\n- Populate caches when DB changes\n- Feed event sourcing systems from existing CRUD DBs\n- Real-time analytics pipelines\n\nTools: Debezium (open source), AWS DMS, Kafka Connect."},
   {id:"ddia09",section:"DDIA Concepts",tags:["storage"],front:"What is the difference between a data lake, data warehouse, and data lakehouse?",back:"Data lake: raw, unstructured/semi-structured data (S3, HDFS). Schema-on-read. Cheap storage, flexible. Hard to query directly.\n\nData warehouse: structured, transformed data (Redshift, BigQuery, Snowflake). Schema-on-write. Optimized for analytical SQL queries.\n\nData lakehouse: combines both — stores raw data in open formats (Parquet/Delta Lake), adds warehouse-style query engines (Databricks, Iceberg). Best of both worlds."},
-  {id:"ddia10",section:"DDIA Concepts",tags:["scalability"],front:"What is MapReduce, and when is it still relevant vs Spark/Flink?",back:"MapReduce: two-phase distributed computation — Map (filter/transform, key-value pairs) → shuffle → Reduce (aggregate by key). Batch, fault-tolerant.\n\nStill relevant: when data is cold (infrequent analysis), Hadoop ecosystems, simple transformations.\n\nSpark/Flink supersede it for: in-memory processing (10-100x faster), streaming, iterative algorithms (ML), richer APIs.\n\nIn interviews: describe the concept; note that production uses Spark or Flink now."},
+  {id:"ddia10",section:"DDIA Concepts",tags:["storage"],front:"What is MapReduce, and when is it still relevant vs Spark/Flink?",back:"MapReduce: two-phase distributed computation — Map (filter/transform, key-value pairs) → shuffle → Reduce (aggregate by key). Batch, fault-tolerant.\n\nStill relevant: when data is cold (infrequent analysis), Hadoop ecosystems, simple transformations.\n\nSpark/Flink supersede it for: in-memory processing (10-100x faster), streaming, iterative algorithms (ML), richer APIs.\n\nIn interviews: describe the concept; note that production uses Spark or Flink now."},
 
-  // ============================================================
-  // SECTION 11 — NETWORKING & PROTOCOLS
-  // ============================================================
-  {id:"net01",section:"Networking & Protocols",tags:["scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is the difference between TCP and UDP, and when do you use each?",back:"TCP: reliable, ordered, connection-oriented. Guarantees delivery via ACKs and retransmission. Use for: HTTP, databases, file transfer — anything where correctness > speed.\n\nUDP: unreliable, connectionless, no ordering. Lower latency, no retransmit. Use for: video streaming, gaming, DNS, VoIP — where a dropped packet is better than waiting."},
+  // SECTION 11 — NETWORKING
+  {id:"net01",section:"Networking & Protocols",tags:["scalability"],front:"What is the difference between TCP and UDP, and when do you use each?",back:"TCP: reliable, ordered, connection-oriented. Guarantees delivery via ACKs and retransmission. Use for: HTTP, databases, file transfer — anything where correctness > speed.\n\nUDP: unreliable, connectionless, no ordering. Lower latency, no retransmit. Use for: video streaming, gaming, DNS, VoIP — where a dropped packet is better than waiting."},
   {id:"net02",section:"Networking & Protocols",tags:["scalability"],front:"What is DNS and how does DNS caching affect system design?",back:"DNS maps domain names to IP addresses via a hierarchical system (root → TLD → authoritative nameserver).\n\nCaching: TTL controls how long resolvers cache answers. Low TTL = fast failover but more DNS lookups. High TTL = faster resolution but slow propagation of changes.\n\nDesign impact: DNS round-robin is a simple load balancer. DNS-based geo-routing (Route 53) enables region failover."},
   {id:"net03",section:"Networking & Protocols",tags:["scalability"],front:"What is HTTP/2 vs HTTP/1.1, and what problems does HTTP/2 solve?",back:"HTTP/1.1: one request per TCP connection (or pipelining, but HOL blocking). Browsers open 6 connections per domain.\n\nHTTP/2: multiplexing — multiple streams over one TCP connection, no HOL blocking. Header compression (HPACK). Server push.\n\nResult: fewer round-trips, lower latency, especially for many small resources (API calls, assets)."},
   {id:"net04",section:"Networking & Protocols",tags:["scalability"],front:"What is a WebSocket and when should you use it over HTTP polling?",back:"WebSocket: persistent, bidirectional TCP connection. Either side can send at any time. Low overhead after handshake.\n\nUse when: real-time, bidirectional, low-latency — chat, live dashboards, collaborative editing, gaming.\n\nHTTP polling alternatives: short polling (frequent requests), long polling (hang request until event). Both waste server resources vs WebSocket."},
   {id:"net05",section:"Networking & Protocols",tags:["scalability"],front:"What is gRPC, and when does it outperform REST?",back:"gRPC: Google's RPC framework using Protocol Buffers (binary serialization) over HTTP/2.\n\nOutperforms REST when: high throughput, many small messages, service-to-service (not browser), need streaming (server-push, bidirectional).\n\nProto: strongly typed schema = generated clients, no JSON parsing overhead.\n\nWeakness: harder to debug (binary), not browser-native (need gRPC-web proxy), schema coupling."},
 
-  // ============================================================
   // SECTION 12 — AVAILABILITY & RELIABILITY
-  // ============================================================
   {id:"rel01",section:"Availability & Reliability",tags:["scalability"],front:"What does '4 nines' mean, and how much downtime does it allow per year?",back:"99.99% availability = 4 nines.\nDowntime allowed: 0.01% × 365 × 24 × 60 = ~52 minutes/year.\n\n3 nines (99.9%): ~8.7 hours/year\n4 nines (99.99%): ~52 minutes/year\n5 nines (99.999%): ~5 minutes/year\n\nEach additional nine is ~10x harder. 5 nines requires zero-downtime deploys, redundant everything, automated failover."},
   {id:"rel02",section:"Availability & Reliability",tags:["scalability"],front:"What is a health check, and what's the difference between liveness and readiness probes?",back:"Health checks verify a service is working.\n\nLiveness probe: 'is the process alive?' If fails → restart the container. Detects deadlocks, infinite loops.\n\nReadiness probe: 'is the service ready to receive traffic?' If fails → remove from load balancer pool. Detects: startup not complete, dependent service unavailable, overloaded.\n\nNever return liveness=healthy during startup warmup — use readiness instead."},
-  {id:"rel03",section:"Availability & Reliability",tags:["scalability"],source_url:"https://github.com/donnemartin/system-design-primer",front:"What is a single point of failure (SPOF) and how do you eliminate it?",back:"SPOF: one component whose failure takes down the whole system.\n\nElimination:\n- Active-passive failover: standby node promoted on failure\n- Active-active: multiple nodes share load; any can fail\n- Replication: DB replicas, storage RAID\n- Geographic distribution: multi-AZ, multi-region\n- Timeouts + circuit breakers: degrade gracefully when dependency fails"},
+  {id:"rel03",section:"Availability & Reliability",tags:["scalability"],front:"What is a single point of failure (SPOF) and how do you eliminate it?",back:"SPOF: one component whose failure takes down the whole system.\n\nElimination:\n- Active-passive failover: standby node promoted on failure\n- Active-active: multiple nodes share load; any can fail\n- Replication: DB replicas, storage RAID\n- Geographic distribution: multi-AZ, multi-region\n- Timeouts + circuit breakers: degrade gracefully when dependency fails"},
   {id:"rel04",section:"Availability & Reliability",tags:["scalability"],front:"What is chaos engineering, and what famous tool implements it?",back:"Chaos engineering deliberately injects failures (kill random servers, introduce latency, partition networks) to test system resilience before real incidents occur.\n\nNetflix Chaos Monkey: randomly terminates EC2 instances in production. Engineers must build services that survive.\n\nPrinciple: if you don't regularly exercise failure paths, they'll fail unexpectedly in production at the worst time."},
   {id:"rel05",section:"Availability & Reliability",tags:["scalability"],front:"What is exponential backoff with jitter, and why is jitter important?",back:"Exponential backoff: after failure, wait 1s → 2s → 4s → 8s... before retry. Prevents hammering a recovering service.\n\nJitter: add random ±variance to the wait time. Without jitter, all clients that failed simultaneously will retry simultaneously (thundering herd).\n\nFormula: wait = min(cap, base * 2^attempt) + random(0, 1) * base"},
 
+  // NEW — STARS/BEHAVIORAL (for EM screen)
+  {id:"star01",section:"Behavioral (STAR)",tags:["stars","clay-monday"],front:"STAR prompt: Tell me about a time you shipped something important under significant pressure or a tight deadline.",back:"Structure:\n- Situation: context (team size, stakes, deadline)\n- Task: your specific role / responsibility\n- Action: what YOU did — decisions made, tradeoffs, how you rallied others\n- Result: outcome (quantified if possible), what you learned\n\nTip: Lead with the tension. 'We had 3 days and the CEO had promised the customer.' Interviewers remember stakes."},
+  {id:"star02",section:"Behavioral (STAR)",tags:["stars","clay-monday"],front:"STAR prompt: Describe a conflict with a colleague or stakeholder and how you resolved it.",back:"Structure:\n- Situation: the conflict and why it existed (different priorities, different data, different values)\n- Task: what was at stake if it wasn't resolved\n- Action: how you approached the conversation — led with curiosity, stated your view clearly, found common ground\n- Result: what changed, what you both agreed to, what you'd do differently\n\nTip: Don't sanitize the conflict — interviewers want to see that you can hold tension without either caving or steamrolling."},
+  {id:"star03",section:"Behavioral (STAR)",tags:["stars","clay-monday"],front:"STAR prompt: Tell me about a time you had to disagree with a senior person or push back on a decision.",back:"Structure:\n- Situation: what was being decided, who the senior person was\n- Task: why you had a different view and what was at stake\n- Action: how you raised it — specific framing, data you used, timing\n- Result: did they change course? Did you? What was the outcome?\n\nTip: The ideal story shows you disagreed respectfully AND committed fully once the decision was made."},
+  {id:"star04",section:"Behavioral (STAR)",tags:["stars","clay-monday"],front:"STAR prompt: Tell me about a time you mentored or grew someone on your team.",back:"Structure:\n- Situation: who the person was (level, context), what gap you saw\n- Task: what you were trying to help them achieve\n- Action: specific things you did — feedback style, 1:1 structure, stretch assignments\n- Result: how they grew (ideally specific outcome — promotion, shipped independently, led a project)\n\nTip: Be honest if it was hard. Growth stories with friction are more credible than 'I coached them and they bloomed.'"},
+  {id:"star05",section:"Behavioral (STAR)",tags:["stars","clay-monday"],front:"STAR prompt: Describe the most painful or difficult project you've worked on.",back:"Structure:\n- Situation: why it was painful (scope creep? unclear ownership? technical debt? people issues?)\n- Task: what your responsibility was\n- Action: how you navigated it — decisions you made, what you gave up, what you protected\n- Result: how it ended, what you'd do differently\n\nTip: Vulnerability + agency is the winning combination. Show that you felt the pain AND took concrete action despite it."},
+  {id:"star06",section:"Behavioral (STAR)",tags:["stars","clay-monday"],front:"STAR prompt: Tell me why you want to work at Clay and why this role specifically.",back:"Frame it as conviction, not generic enthusiasm.\n\n- Clay's problem: enrichment + outbound automation; GTM stack being rebuilt at scale\n- Why now: early-stage problems in a late-stage-growth company\n- Why you: systems background, data pipelines, wanting to work at this scale\n- What you'd bring: specific technical areas with immediate impact\n\nAvoid: 'I love Clay's mission.'\nUse: 'I want to work on the enrichment pipeline scaling problem.'"},
+
+  // NEW — EM/WHY QUESTIONS
+  {id:"em01",section:"EM Prep",tags:["clay-monday","interview-meta"],front:"What are 3-5 strong questions to ask an EM interviewer at Clay?",back:"1. What does on-call look like? P95 incident cadence?\n2. Tension: features vs. infra debt — how do you navigate it?\n3. First 90 days: defined ramp project or own something immediately?\n4. Where does this team have the most technical risk?\n5. Build vs. buy philosophy for infra components?\n\nPick 2-3. Questions about their risk > questions about perks."},
+  {id:"em02",section:"EM Prep",tags:["clay-monday","interview-meta"],front:"How should you frame your engineering management style in an EM interview?",back:"Be concrete, not 'I'm collaborative and data-driven.'\n\nExamples:\n- 1:1s structured around blockers, not status\n- Feedback in the moment, not saved for reviews\n- Heavy context upfront, then get out of the way\n- Underperformance: make it explicit early, set 30-day recovery arc\n\nAlways anchor with a specific story."},
+
+  // NEW — NOTION PREP
+  {id:"notion01",section:"Notion Prep",tags:["notion-prep"],front:"What is the openai Python SDK v0.27.x API for chat completions?",back:"import openai\nopenai.api_key = 'sk-...'\n\nresponse = openai.ChatCompletion.create(\n  model='gpt-4',\n  messages=[\n    {'role': 'system', 'content': 'You are a helpful assistant.'},\n    {'role': 'user', 'content': 'Hello'}\n  ]\n)\ntext = response['choices'][0]['message']['content']\n\nKey: openai==0.27.8 uses dict access, not attribute access. response['choices'] not response.choices."},
+  {id:"notion02",section:"Notion Prep",tags:["notion-prep"],front:"How do you implement JSON search / filtering in Python without a DB?",back:"Pattern 1: list comprehension\nresults = [r for r in records if r.get('field') == value]\n\nPattern 2: nested field access safely\nval = record.get('nested', {}).get('field', default)\n\nPattern 3: partial string match\nresults = [r for r in records if search_term.lower() in r.get('name','').lower()]\n\nPattern 4: multi-field filter\nresults = [r for r in records if r.get('type') == 'A' and r.get('score', 0) > threshold]"},
+  {id:"notion03",section:"Notion Prep",tags:["notion-prep"],front:"How do you structure a function-calling / tool-use pattern with openai==0.27.8?",back:"response = openai.ChatCompletion.create(\n  model='gpt-4-0613',\n  messages=messages,\n  functions=[{\n    'name': 'search_records',\n    'description': 'Search records by criteria',\n    'parameters': {\n      'type': 'object',\n      'properties': {'query': {'type': 'string'}},\n      'required': ['query']\n    }\n  }],\n  function_call='auto'\n)\n\nmsg = response['choices'][0]['message']\nif msg.get('function_call'):\n  args = json.loads(msg['function_call']['arguments'])"},
+  {id:"notion04",section:"Notion Prep",tags:["notion-prep"],front:"What are the screen-share meta rules for a Python coding screen?",back:"1. Think aloud — narrate what you're typing before you type it\n2. Start with a brute-force that works, then optimize\n3. Name variables descriptively — screenshare code gets read by interviewers simultaneously\n4. Test with a simple example before running\n5. If stuck: restate the problem, talk through the constraint\n6. openai==0.27.8 caveat: always use dict access for response objects\n7. Ask about edge cases before coding them — shows foresight"},
+
+  // NEW — FLORAL PREP
+  {id:"floral01",section:"Floral Prep",tags:["floral-prep"],front:"Python json.load vs json.loads — what's the difference?",back:"json.load(f): reads from a FILE OBJECT\n  with open('data.json') as f:\n    data = json.load(f)\n\njson.loads(s): reads from a STRING\n  data = json.loads('{"key": "value"}')\n\nCommon trap: passing a filename string to json.load() raises TypeError. json.load needs a file handle, not a path."},
+  {id:"floral02",section:"Floral Prep",tags:["floral-prep"],front:"Python file modes: what are 'r', 'w', 'a', 'rb', 'r+' and when do you use each?",back:"'r': read text (default). Error if file doesn't exist.\n'w': write text. Creates or TRUNCATES file.\n'a': append text. Creates if missing, never truncates.\n'rb': read binary. For images, pickles, etc.\n'r+': read AND write. Doesn't truncate. Error if missing.\n\nCommon trap: using 'w' when you mean 'a' — silently destroys existing content."},
+  {id:"floral03",section:"Floral Prep",tags:["floral-prep"],front:"Python Counter: what is it and how do you use it for log analysis?",back:"from collections import Counter\n\n# Count occurrences\nwords = ['a','b','a','c','a','b']\nc = Counter(words)  # Counter({'a': 3, 'b': 2, 'c': 1})\nc.most_common(2)    # [('a', 3), ('b', 2)]\nc['a']              # 3\nc['missing']        # 0 (no KeyError)\n\nLog pattern: Counter(line.split()[0] for line in open('app.log'))  # count by first field"},
+  {id:"floral04",section:"Floral Prep",tags:["floral-prep"],front:"Python sorted() with key — how do you sort a list of dicts by a field?",back:"records = [{'name': 'B', 'score': 3}, {'name': 'A', 'score': 5}]\n\n# Sort by score ascending\nsorted(records, key=lambda r: r['score'])\n\n# Sort by score descending\nsorted(records, key=lambda r: r['score'], reverse=True)\n\n# Sort by multiple fields (primary, secondary)\nsorted(records, key=lambda r: (r['type'], -r['score']))\n\n# Sort with missing key safely\nsorted(records, key=lambda r: r.get('score', 0))"},
+  {id:"floral05",section:"Floral Prep",tags:["floral-prep"],front:"Log parsing pattern: how do you identify session boundaries in a stream of timestamped log lines?",back:"Pattern: detect gaps > threshold between consecutive events from same user/session_id.\n\nlogs.sort(key=lambda x: (x['user_id'], x['timestamp']))\nsessions = []\ncurrent = []\nfor log in logs:\n  if current and (log['timestamp'] - current[-1]['timestamp'] > SESSION_GAP or log['user_id'] != current[-1]['user_id']):\n    sessions.append(current)\n    current = []\n  current.append(log)\nif current: sessions.append(current)\n\nKEY: sort first by user, then time. Session boundary = gap OR user change."},
+  {id:"floral06",section:"Floral Prep",tags:["floral-prep"],front:"What is a systems-data pattern question, and how do you approach it in a HackerRank context?",back:"Pattern: given a log file / JSON records, compute metrics, find anomalies, or extract structured info.\n\nApproach:\n1. Read all data first (don't process line-by-line unless explicitly streaming)\n2. Build an intermediate structure (dict of lists, Counter, etc.)\n3. Compute answer from structure\n4. Print in required format\n\nCommon mistake: trying to be clever with one-pass streaming before you understand the problem. Read-then-compute wins for clarity."},
+
+  // DRAW-FIRST CARDS
+  {id:"draw01",section:"Draw-First",tags:["clay","clay-monday"],type:"draw-first",front:"Design the Clay enrichment pipeline. Draw it: from CSV upload to enriched results.",back:"The canonical flow:\n\nCSV Upload → API → Postgres (job + rows) → SQS Queue → ECS Fargate Workers → Identity Resolution (pg_trgm) → Redis Cache Check → Per-Source Rate Limiter (Redis token bucket) → Partner API → Cache Write → Results Table → Webhook/Poll\n\nKey boxes: Ingestion, Queue, Worker Pool, ID Resolver, Cache, Rate Limiter, Partner APIs, Output Store",diagram:"clay-pipeline"},
+  {id:"draw02",section:"Draw-First",tags:["scalability"],type:"draw-first",front:"Design a web crawler at scale. Draw the components and data flow.",back:"Frontier Queue (URL priority queue) → Fetcher Workers → Dedup Filter (Bloom filter + Redis) → Parser → Content Store (S3) → URL Extractor → Frontier Queue (loop)\n\nSidecar: Politeness Manager (per-domain rate limit), Robots.txt Cache, Canonicalizer",diagram:"web-crawler"},
+  {id:"draw03",section:"Draw-First",tags:["scalability"],type:"draw-first",front:"Design a URL shortener. Draw the read path and write path separately.",back:"WRITE PATH: Client → API Server → ID Generator (Redis INCR or Snowflake) → Postgres (store mapping) → Redis Cache (warm) → return short URL\n\nREAD PATH: Client → CDN (cache 302) → Load Balancer → API Server → Redis Cache (check) → Postgres fallback → 302 Redirect\n\nKey insight: reads are 100x writes. CDN + Redis absorb >99% of read traffic.",diagram:"url-shortener"},
+  {id:"draw04",section:"Draw-First",tags:["scalability"],type:"draw-first",front:"Design a distributed rate limiter. Draw the architecture.",back:"Client → API Gateway → Rate Limiter Service → Redis Cluster (token buckets, Lua scripts)\n\nRedis key: rl:{user_id}:{action}:{window}\nLua script: atomic token-bucket check-and-decrement\nFallback: if Redis down → fail-open (allow) or fail-closed (deny) — document the choice\n\nMulti-tier: check global limit → customer limit → per-resource limit. Deny if any exceeded.",diagram:"rate-limiter"},
+  {id:"draw05",section:"Draw-First",tags:["identity-resolution","clay"],type:"draw-first",front:"Design the identity resolution component of an enrichment pipeline. Draw the decision tree.",back:"Input: raw company name/domain\n\n1. Normalize: lowercase, strip 'Inc/LLC/Ltd', extract domain\n2. Exact match: SELECT canonical_id FROM entities WHERE domain = ?\n3. Cache check: Redis GET canonical:{normalized_name}\n4. Fuzzy match: Postgres pg_trgm similarity > 0.7\n5. No match → CREATE new entity, assign canonical_id, cache it\n6. Return canonical_id\n\nBlocking keys: domain, first-3-chars-of-name, LinkedIn ID",diagram:"identity-resolver"},
+  {id:"draw06",section:"Draw-First",tags:["scalability"],type:"draw-first",front:"Design a chat system (Slack-style). Draw the message delivery path.",back:"Sender → WebSocket Connection → Chat Service → Message Store (Cassandra, partition by channel_id) → Presence Service → Push to Recipient WebSocket(s)\n\nOffline path: Recipient WebSocket server → check presence → not connected → write to Inbox table → deliver on reconnect\n\nFan-out: for group channels, fan out to N connected users. Use pub/sub (Redis channel) per chat room.",diagram:"chat-system"},
 ];
 
+const DIAGRAMS = {
+"clay-pipeline": `<pre style="font-size:12px;line-height:1.7;overflow-x:auto;background:var(--bg);padding:12px;border-radius:8px;border:1px solid var(--border)">CSV Upload
+    ↓
+API → Postgres (job_id, rows)
+    ↓
+SQS Work Queue
+    ↓
+ECS Fargate Workers (pop rows)
+    ↓
+Identity Resolution  ← pg_trgm fuzzy match, domain exact match
+    ↓
+Redis Cache Check  ← key: canonical_id
+    ↓ (miss)
+Per-Source Rate Limiter  ← Redis token bucket, Lua script
+    ↓
+Partner API Call  (LinkedIn, Apollo, Crunchbase…)
+    ↓
+Write to Cache + Results Table
+    ↓
+Webhook / Poll for job completion
+
+Cache HIT → skip Partner API, return cached result directly.</pre>`,
+"web-crawler": `<pre style="font-size:12px;line-height:1.7;overflow-x:auto;background:var(--bg);padding:12px;border-radius:8px;border:1px solid var(--border)">Frontier Queue (priority: PageRank, freshness)
+    ↓
+Fetcher Workers
+    ↓ check
+Dedup Filter  ← Bloom filter (fast) + Redis set (precise)
+    ↓ not seen
+HTML Parser
+    ↓               ↘
+URL Extractor     S3 Content Store
+    ↓ (new URLs)
+  ↳ back to Frontier Queue
+
+Politeness layer: per-domain rate limit queue
+Robots.txt: cached, respected before fetch</pre>`,
+"url-shortener": `<pre style="font-size:12px;line-height:1.7;overflow-x:auto;background:var(--bg);padding:12px;border-radius:8px;border:1px solid var(--border)">WRITE PATH:
+Client → API Server → ID Generator (Redis INCR or Snowflake)
+       → Postgres (store short→long mapping)
+       → Redis Cache (warm on write)
+       → return short URL
+
+READ PATH (100x traffic):
+Client → CDN (cache 302)
+       → Load Balancer
+       → API Server → Redis Cache → Postgres (fallback only)
+       → HTTP 302 Redirect to original URL
+
+Key: use 302 (not 301) so every visit is trackable.</pre>`,
+"rate-limiter": `<pre style="font-size:12px;line-height:1.7;overflow-x:auto;background:var(--bg);padding:12px;border-radius:8px;border:1px solid var(--border)">Client → API Gateway → Rate Limiter Service → Redis Cluster
+                                                  ↓
+                                         Token bucket per key
+                                         Lua script (atomic)
+                                              ↓        ↓
+                                           ALLOW      DENY
+                                             ↓          ↓
+                                      Forward req    429 Too Many Requests
+
+Redis key: rl:{user_id}:{action}
+3 tiers checked in order:
+  1. Global per partner (e.g., LinkedIn 5000/min total)
+  2. Per customer per partner
+  3. Per customer total (billing quota)</pre>`,
+"identity-resolver": `<pre style="font-size:12px;line-height:1.7;overflow-x:auto;background:var(--bg);padding:12px;border-radius:8px;border:1px solid var(--border)">Input: raw company name or domain
+
+1. Normalize: lowercase, strip Inc/LLC/Ltd, extract domain
+         ↓
+2. Exact domain match in Postgres → canonical_id  ✓ return
+         ↓ (no match)
+3. Redis cache lookup by normalized name → canonical_id  ✓ return
+         ↓ (miss)
+4. pg_trgm fuzzy match (similarity > 0.7) → canonical_id  ✓ return
+         ↓ (no match)
+5. CREATE new entity → assign new canonical_id → cache in Redis
+
+Blocking keys: domain, first-3-chars-of-name, LinkedIn ID</pre>`,
+"chat-system": `<pre style="font-size:12px;line-height:1.7;overflow-x:auto;background:var(--bg);padding:12px;border-radius:8px;border:1px solid var(--border)">Sender (WebSocket)
+    ↓
+Chat Service
+    ↓                        ↓
+Cassandra store          Presence Service
+(partition: channel_id)       ↓
+                         Is recipient online?
+                           ↓          ↓
+                         YES          NO
+                           ↓          ↓
+                      WS Push     Inbox table
+                                  (deliver on reconnect)
+
+Group channels: Redis pub/sub per room → fan-out to N WebSockets
+Read receipts: lightweight ack events sent back to server</pre>`
+};
+
+// Tag config
+const TAGS = [
+  {id:"clay-monday", label:"Clay Monday", featured:true, desc:"Night-before Clay on-site prep"},
+  {id:"notion-prep", label:"Notion Prep", featured:true, desc:"OpenAI API + JSON search"},
+  {id:"floral-prep", label:"Floral Prep", featured:true, desc:"Python + log parsing"},
+  {id:"clay", label:"Clay", desc:"Clay-specific knowledge"},
+  {id:"rate-limiting", label:"Rate Limiting", desc:"Token bucket, leaky bucket, etc"},
+  {id:"identity-resolution", label:"Identity Resolution", desc:"Entity matching, dedup"},
+  {id:"scalability", label:"Scalability", desc:"Scaling patterns"},
+  {id:"storage", label:"Storage", desc:"Databases, caching"},
+  {id:"messaging", label:"Messaging", desc:"Queues, Kafka, async"},
+  {id:"interview-meta", label:"Interview Meta", desc:"Frameworks, tips, meta-skills"},
+  {id:"stars", label:"Behavioral (STAR)", desc:"Stories for EM screens"},
+];
+
+// Interview simulator configs
+const SIMULATORS = [
+  {
+    id:"clay-sysdesign",
+    title:"Clay System Design",
+    date:"Mon 4/27",
+    desc:"~18 cards, ~20 min — boxes-and-arrows focus",
+    phases:[
+      {label:"Requirements Clarification", cardIds:["meta02","f01","f06","meta05","meta03"]},
+      {label:"Scale Estimation", cardIds:["s01","f09","meta07"]},
+      {label:"Architecture — High Level", cardIds:["cl09","cl10","cl04","cl02","cl03"]},
+      {label:"Rate Limiting Deep Dive", cardIds:["rl05","rl06","rl08","rl01"]},
+      {label:"Identity Resolution Deep Dive", cardIds:["id05","id02","id04","id01"]},
+      {label:"Tradeoffs & Wrap-up", cardIds:["meta06","meta10","cl12"]},
+    ]
+  },
+  {
+    id:"clay-em",
+    title:"Clay EM Screen",
+    date:"Wed 4/29 — Cara Silverstein",
+    desc:"~15 cards — behavioral + design thinking",
+    phases:[
+      {label:"Why Clay / Why This Role", cardIds:["star06","cl09"]},
+      {label:"STAR Stories", cardIds:["star01","star02","star03","star04","star05"]},
+      {label:"EM-Specific Design Questions", cardIds:["meta09","cl11","cl06"]},
+      {label:"Behavioral Deep Dive", cardIds:["em02","meta11"]},
+      {label:"Questions to Ask", cardIds:["em01"]},
+    ]
+  },
+  {
+    id:"notion-screen",
+    title:"Notion Tech Screen",
+    date:"Week of 5/4",
+    desc:"~14 cards — OpenAI SDK + JSON patterns",
+    phases:[
+      {label:"OpenAI API Fundamentals", cardIds:["notion01","notion03"]},
+      {label:"JSON Search Patterns", cardIds:["notion02","db12"]},
+      {label:"System / Function Calling", cardIds:["notion03","mq09"]},
+      {label:"Screen-Share Meta", cardIds:["notion04","meta03"]},
+    ]
+  },
+  {
+    id:"floral-hackerrank",
+    title:"Floral HackerRank",
+    date:"Tue 4/28",
+    desc:"~12 cards — Python syntax + log parsing",
+    phases:[
+      {label:"Python Syntax Traps", cardIds:["floral01","floral02","floral03","floral04"]},
+      {label:"Systems-Data Patterns", cardIds:["floral05","floral06","db09"]},
+      {label:"Testing & Iteration", cardIds:["notion04","meta03","f10"]},
+    ]
+  }
+];
 
 // SM-2 state management
 function loadProgress() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-  } catch(e) { return {}; }
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
 }
-function saveProgress(p) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
-}
+function saveProgress(p) { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
 function getCardState(progress, id) {
   return progress[id] || { ease: 2.5, interval: 1, due: 0, reps: 0 };
 }
-function isDue(state) {
-  return state.due <= Date.now();
-}
+function isDue(state) { return state.due <= Date.now(); }
 function applyRating(state, rating) {
   let { ease, interval, reps } = state;
-  if (rating === 'again') {
-    interval = 1;
-    ease = Math.max(1.3, ease - 0.2);
-    reps = 0;
-  } else if (rating === 'hard') {
-    interval = Math.max(1, Math.ceil(interval * 1.2));
-    ease = Math.max(1.3, ease - 0.15);
-  } else if (rating === 'good') {
-    interval = reps === 0 ? 1 : Math.min(180, Math.ceil(interval * ease));
-    reps += 1;
-  } else { // easy
-    interval = reps === 0 ? 4 : Math.min(180, Math.ceil(interval * ease * 1.3));
-    ease = Math.min(3.0, ease + 0.15);
-    reps += 1;
-  }
-  const due = Date.now() + interval * 24 * 60 * 60 * 1000;
-  return { ease, interval, due, reps };
+  if (rating === 'again') { interval = 1; ease = Math.max(1.3, ease - 0.2); reps = 0; }
+  else if (rating === 'hard') { interval = Math.max(1, Math.ceil(interval * 1.2)); ease = Math.max(1.3, ease - 0.15); }
+  else if (rating === 'good') { interval = reps === 0 ? 1 : Math.min(180, Math.ceil(interval * ease)); reps += 1; }
+  else { interval = reps === 0 ? 4 : Math.min(180, Math.ceil(interval * ease * 1.3)); ease = Math.min(3.0, ease + 0.15); reps += 1; }
+  return { ease, interval, due: Date.now() + interval * 86400000, reps };
 }
 
 // App state
 let currentSession = [];
 let sessionIndex = 0;
 let sessionDone = 0;
+let sessionMode = 'review'; // 'review' | 'drill' | 'sim'
+let sessionSimId = null;
+let sessionRatings = {};
 let selectedSections = new Set();
 let filterAll = true;
-let isDrillMode = false;
-let selectedDrillTags = new Set();
+let drawRevealed = false;
 
-const DRILL_TAGS = [
-  'clay','notion','floral','rate-limiting','identity-resolution',
-  'scalability','storage','messaging','interview-meta','stars',
-  'clay-monday','notion-prep','floral-prep'
-];
+function getCardById(id) { return CARDS.find(c => c.id === id); }
+
+// Build flattened sim card list with phase info
+function buildSimSession(simId) {
+  const sim = SIMULATORS.find(s => s.id === simId);
+  if (!sim) return [];
+  const result = [];
+  sim.phases.forEach(phase => {
+    phase.cardIds.forEach(cid => {
+      const card = getCardById(cid);
+      if (card) result.push({...card, simPhase: phase.label});
+    });
+  });
+  return result;
+}
 
 function init() {
-  // Build section filter buttons
   const sections = [...new Set(CARDS.map(c => c.section))];
   const filtersEl = document.getElementById('sectionFilters');
   const allBtn = document.createElement('button');
-  allBtn.className = 'filter-btn active';
-  allBtn.textContent = 'All sections';
-  allBtn.dataset.section = '__all__';
+  allBtn.className = 'filter-btn active'; allBtn.textContent = 'All sections'; allBtn.dataset.section = '__all__';
   allBtn.onclick = () => toggleFilter('__all__');
   filtersEl.appendChild(allBtn);
   sections.forEach(s => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-btn';
-    btn.textContent = s;
-    btn.dataset.section = s;
-    btn.onclick = () => toggleFilter(s);
-    filtersEl.appendChild(btn);
+    const btn = document.createElement('button'); btn.className = 'filter-btn'; btn.textContent = s; btn.dataset.section = s;
+    btn.onclick = () => toggleFilter(s); filtersEl.appendChild(btn);
   });
-
-  // Build drill tag chips
-  const tagGridEl = document.getElementById('tagGrid');
-  DRILL_TAGS.forEach(tag => {
-    const chip = document.createElement('button');
-    chip.className = 'tag-chip';
-    chip.textContent = tag;
-    chip.dataset.tag = tag;
-    chip.onclick = () => toggleDrillTag(tag);
-    tagGridEl.appendChild(chip);
-  });
-
+  buildTagGrid();
+  buildSimList();
   renderDeckList();
   updateHeaderStats();
 }
 
-function toggleDrillTag(tag) {
-  if (selectedDrillTags.has(tag)) {
-    selectedDrillTags.delete(tag);
-  } else {
-    selectedDrillTags.add(tag);
-  }
-  document.querySelectorAll('.tag-chip').forEach(chip => {
-    chip.classList.toggle('selected', selectedDrillTags.has(chip.dataset.tag));
+function buildTagGrid() {
+  const grid = document.getElementById('tagGrid');
+  TAGS.forEach(tag => {
+    const btn = document.createElement('button');
+    btn.className = 'tag-btn' + (tag.featured ? ' featured' : '');
+    const count = CARDS.filter(c => c.tags && c.tags.includes(tag.id)).length;
+    btn.innerHTML = `${tag.label} <span style="opacity:.6;font-size:12px">(${count})</span>`;
+    btn.title = tag.desc || '';
+    btn.onclick = () => startDrill(tag.id);
+    grid.appendChild(btn);
   });
-  const drillBtn = document.getElementById('drillStartBtn');
-  if (selectedDrillTags.size > 0) {
-    const count = CARDS.filter(c => c.tags && c.tags.some(t => selectedDrillTags.has(t))).length;
-    drillBtn.textContent = `Drill selected tags (${count} cards)`;
-    drillBtn.classList.add('visible');
-  } else {
-    drillBtn.classList.remove('visible');
-  }
 }
 
-function startDrill() {
-  if (selectedDrillTags.size === 0) return;
-  isDrillMode = true;
-  currentSession = CARDS
-    .filter(c => c.tags && c.tags.some(t => selectedDrillTags.has(t)))
-    .sort(() => Math.random() - 0.5);
-  if (currentSession.length === 0) return;
-  sessionIndex = 0;
-  sessionDone = 0;
-  document.getElementById('drillModeBadge').classList.add('visible');
-  showStudy();
-  showCard();
+function buildSimList() {
+  const list = document.getElementById('simList');
+  SIMULATORS.forEach(sim => {
+    const el = document.createElement('div'); el.className = 'sim-option';
+    const cardCount = buildSimSession(sim.id).length;
+    el.innerHTML = `<h3>${sim.title}</h3><div class="meta">${sim.date} &mdash; ${sim.desc} &mdash; ${cardCount} cards</div>`;
+    el.onclick = () => startSim(sim.id);
+    list.appendChild(el);
+  });
 }
 
 function toggleFilter(section) {
-  if (section === '__all__') {
-    filterAll = true;
-    selectedSections.clear();
-  } else {
+  if (section === '__all__') { filterAll = true; selectedSections.clear(); }
+  else {
     filterAll = false;
-    if (selectedSections.has(section)) {
-      selectedSections.delete(section);
-      if (selectedSections.size === 0) { filterAll = true; }
-    } else {
-      selectedSections.add(section);
-    }
+    if (selectedSections.has(section)) { selectedSections.delete(section); if (selectedSections.size === 0) filterAll = true; }
+    else selectedSections.add(section);
   }
   document.querySelectorAll('.filter-btn').forEach(btn => {
-    if (filterAll) {
-      btn.classList.toggle('active', btn.dataset.section === '__all__');
-    } else {
-      btn.classList.toggle('active', selectedSections.has(btn.dataset.section));
-    }
+    if (filterAll) btn.classList.toggle('active', btn.dataset.section === '__all__');
+    else btn.classList.toggle('active', selectedSections.has(btn.dataset.section));
   });
   renderDeckList();
 }
@@ -567,16 +598,14 @@ function toggleFilter(section) {
 function renderDeckList() {
   const progress = loadProgress();
   const sections = [...new Set(CARDS.map(c => c.section))];
-  const listEl = document.getElementById('deckList');
-  listEl.innerHTML = '';
+  const listEl = document.getElementById('deckList'); listEl.innerHTML = '';
   let totalDue = 0;
   sections.forEach(s => {
     if (!filterAll && !selectedSections.has(s)) return;
     const cards = CARDS.filter(c => c.section === s);
     const due = cards.filter(c => isDue(getCardState(progress, c.id))).length;
     totalDue += due;
-    const div = document.createElement('div');
-    div.className = 'section-card';
+    const div = document.createElement('div'); div.className = 'section-card';
     div.innerHTML = `<h3>${s}</h3><div class="meta">${cards.length} cards${due > 0 ? ` &mdash; <span style="color:var(--accent)">${due} due</span>` : ' &mdash; all reviewed'}</div>`;
     div.onclick = () => { filterAll = false; selectedSections = new Set([s]); document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.section === s)); renderDeckList(); };
     listEl.appendChild(div);
@@ -593,59 +622,79 @@ function updateHeaderStats() {
   document.getElementById('headerStats').textContent = `${total} cards · ${due} due`;
 }
 
+// --- Screen transitions ---
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function showLanding() { showScreen('landing'); renderDeckList(); updateHeaderStats(); }
+function showSimPicker() { showScreen('simPicker'); }
+
+// --- Drill modal ---
+function openDrillModal() { document.getElementById('drillModal').classList.add('active'); }
+function closeDrillModal() { document.getElementById('drillModal').classList.remove('active'); }
+
+// --- Session starters ---
 function startSession() {
-  isDrillMode = false;
-  document.getElementById('drillModeBadge').classList.remove('visible');
   const progress = loadProgress();
   const activeSections = filterAll ? null : selectedSections;
-  currentSession = CARDS
-    .filter(c => {
-      if (activeSections && !activeSections.has(c.section)) return false;
-      return isDue(getCardState(progress, c.id));
-    })
-    .sort(() => Math.random() - 0.5);
-  if (currentSession.length === 0) return;
-  sessionIndex = 0;
-  sessionDone = 0;
-  showStudy();
-  showCard();
+  currentSession = CARDS.filter(c => {
+    if (activeSections && !activeSections.has(c.section)) return false;
+    return isDue(getCardState(progress, c.id));
+  }).sort(() => Math.random() - 0.5);
+  if (!currentSession.length) return;
+  sessionMode = 'review'; sessionSimId = null; sessionRatings = {};
+  sessionIndex = 0; sessionDone = 0;
+  setupStudyMode('review');
+  showScreen('study'); showCard();
 }
 
-function showStudy() {
-  document.getElementById('landing').classList.remove('active');
-  document.getElementById('done').classList.remove('active');
-  document.getElementById('study').classList.add('active');
-}
-function showLanding() {
-  document.getElementById('study').classList.remove('active');
-  document.getElementById('done').classList.remove('active');
-  document.getElementById('landing').classList.add('active');
-  document.getElementById('drillModeBadge').classList.remove('visible');
-  isDrillMode = false;
-  renderDeckList();
-  updateHeaderStats();
+function startDrill(tagId) {
+  closeDrillModal();
+  currentSession = CARDS.filter(c => c.tags && c.tags.includes(tagId)).sort(() => Math.random() - 0.5);
+  if (!currentSession.length) { alert('No cards for that tag yet.'); return; }
+  sessionMode = 'drill'; sessionSimId = tagId; sessionRatings = {};
+  sessionIndex = 0; sessionDone = 0;
+  setupStudyMode('drill');
+  showScreen('study'); showCard();
 }
 
+function startSim(simId) {
+  currentSession = buildSimSession(simId);
+  if (!currentSession.length) return;
+  sessionMode = 'sim'; sessionSimId = simId; sessionRatings = {};
+  sessionIndex = 0; sessionDone = 0;
+  setupStudyMode('sim');
+  showScreen('study'); showCard();
+}
+
+function setupStudyMode(mode) {
+  const badge = document.getElementById('modeBadge');
+  if (mode === 'drill') { badge.style.display = 'inline-block'; badge.className = 'mode-badge drill'; badge.textContent = 'Drill Mode'; }
+  else if (mode === 'sim') { badge.style.display = 'inline-block'; badge.className = 'mode-badge sim'; badge.textContent = 'Simulator'; }
+  else { badge.style.display = 'none'; }
+}
+
+// --- Card display ---
 function showCard() {
-  if (sessionIndex >= currentSession.length) {
-    showDone();
-    return;
-  }
+  if (sessionIndex >= currentSession.length) { showDone(); return; }
   const card = currentSession[sessionIndex];
+  drawRevealed = false;
   document.getElementById('cardSection').textContent = card.section;
   document.getElementById('cardFront').textContent = card.front;
-  const backEl = document.getElementById('cardBack');
-  backEl.textContent = card.back;
-  backEl.classList.remove('visible');
+  const backEl = document.getElementById('cardBack'); backEl.textContent = card.back; backEl.classList.remove('visible');
   document.getElementById('showBtn').style.display = 'block';
   document.getElementById('ratingRow').classList.remove('visible');
-  // Learn more link — hidden until answer shown
-  const learnMore = document.getElementById('learnMore');
-  const learnMoreLink = document.getElementById('learnMoreLink');
-  learnMore.classList.remove('visible');
-  if (card.source_url) {
-    learnMoreLink.href = card.source_url;
+  document.getElementById('phaseLabel').textContent = card.simPhase || '';
+  document.getElementById('drawDiagram').style.display = 'none'; document.getElementById('drawDiagram').innerHTML = '';
+
+  if (card.type === 'draw-first') {
+    document.getElementById('drawActions').style.display = 'flex';
+    document.getElementById('showBtn').style.display = 'none';
+  } else {
+    document.getElementById('drawActions').style.display = 'none';
   }
+
   const pct = (sessionIndex / currentSession.length) * 100;
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('counter').textContent = `${sessionIndex + 1} of ${currentSession.length}`;
@@ -655,42 +704,75 @@ function showAnswer() {
   document.getElementById('cardBack').classList.add('visible');
   document.getElementById('showBtn').style.display = 'none';
   document.getElementById('ratingRow').classList.add('visible');
-  // Show learn more if card has a source url
+}
+
+function revealDrawCard() {
   const card = currentSession[sessionIndex];
-  if (card && card.source_url) {
-    document.getElementById('learnMore').classList.add('visible');
+  document.getElementById('drawActions').style.display = 'none';
+  document.getElementById('cardBack').classList.add('visible');
+  if (card.diagram && DIAGRAMS[card.diagram]) {
+    const diag = document.getElementById('drawDiagram');
+    diag.style.display = 'block';
+    diag.innerHTML = DIAGRAMS[card.diagram];
   }
+  document.getElementById('ratingRow').classList.add('visible');
+  drawRevealed = true;
+}
+
+function skipDrawCard() {
+  sessionIndex++;
+  showCard();
 }
 
 function rate(rating) {
   const card = currentSession[sessionIndex];
-  if (!isDrillMode) {
-    // Only update SRS in normal mode
+  if (sessionMode === 'review') {
     const progress = loadProgress();
     const state = getCardState(progress, card.id);
     progress[card.id] = applyRating(state, rating);
     saveProgress(progress);
   }
+  sessionRatings[card.id] = rating;
   sessionDone++;
   sessionIndex++;
   showCard();
 }
 
 function showDone() {
-  document.getElementById('study').classList.remove('active');
-  document.getElementById('done').classList.add('active');
-  const remaining = CARDS.filter(c => {
-    const p = loadProgress();
-    return isDue(getCardState(p, c.id));
-  }).length;
+  showScreen('done');
+  const hardCount = Object.values(sessionRatings).filter(r => r === 'hard' || r === 'again').length;
+  const goodCount = Object.values(sessionRatings).filter(r => r === 'good').length;
+  const easyCount = Object.values(sessionRatings).filter(r => r === 'easy').length;
+
   document.getElementById('doneTitle').textContent = `Done! ${sessionDone} reviewed`;
-  document.getElementById('doneSubtitle').textContent = remaining > 0
-    ? `${remaining} cards still due today`
-    : 'All cards reviewed for now!';
+  const summaryBlock = document.getElementById('simSummaryBlock');
+
+  if (sessionMode === 'sim') {
+    const sim = SIMULATORS.find(s => s.id === sessionSimId);
+    const readyMsg = hardCount === 0 ? "You're ready. No hard cards." : hardCount <= 2 ? "Nearly there. A couple to revisit." : "A few gaps — review the hard ones tonight.";
+    summaryBlock.innerHTML = `<div class="sim-summary">
+      <h3>${sim ? sim.title : 'Simulator'} summary</h3>
+      <div class="sim-stat">Cards reviewed: ${sessionDone}</div>
+      <div class="sim-stat">Again/Hard: ${hardCount} &nbsp; Good: ${goodCount} &nbsp; Easy: ${easyCount}</div>
+      <div class="sim-highlight">${readyMsg}</div>
+    </div>`;
+    document.getElementById('keepGoingBtn').style.display = 'none';
+    document.getElementById('doneSubtitle').textContent = '';
+  } else if (sessionMode === 'drill') {
+    summaryBlock.innerHTML = '';
+    document.getElementById('keepGoingBtn').style.display = 'block';
+    document.getElementById('doneSubtitle').textContent = `Drill complete. Hard: ${hardCount} · Good: ${goodCount} · Easy: ${easyCount}`;
+  } else {
+    summaryBlock.innerHTML = '';
+    document.getElementById('keepGoingBtn').style.display = 'block';
+    const remaining = CARDS.filter(c => isDue(getCardState(loadProgress(), c.id))).length;
+    document.getElementById('doneSubtitle').textContent = remaining > 0 ? `${remaining} cards still due today` : 'All cards reviewed for now!';
+  }
 }
 
 function keepGoing() {
-  startSession();
+  if (sessionMode === 'drill' && sessionSimId) { startDrill(sessionSimId); }
+  else startSession();
 }
 
 window.onload = init;
