@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Notion Python Refresher</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #242837;
+    --border: #2e3245;
+    --accent: #5b8dee;
+    --accent2: #7c4dff;
+    --green: #4caf7d;
+    --yellow: #f0b429;
+    --red: #f06464;
+    --text: #e8eaf6;
+    --text-muted: #8891b4;
+    --code-bg: #0d1117;
+    --code-border: #21262d;
+    --radius: 14px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    gap: 12px;
+    overflow-x: hidden;
+  }
+
+  /* Header */
+  .header {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 4px;
+  }
+  .header h1 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+  .header .meta { font-size: 13px; color: var(--text-muted); }
+
+  /* Progress */
+  .progress-bar-wrap {
+    width: 100%;
+    max-width: 680px;
+    background: var(--surface);
+    border-radius: 100px;
+    height: 4px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 100px;
+    transition: width 0.3s ease;
+  }
+  .progress-label {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 0 2px;
+  }
+  .progress-label .cat-badge {
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--surface2);
+    color: var(--text-muted);
+  }
+  .progress-label .cat-badge.cat-stdlib { background: #1a2e45; color: var(--accent); }
+  .progress-label .cat-badge.cat-boilerplate { background: #2a1e2a; color: #cc88ff; }
+  .progress-label .cat-badge.cat-gotcha { background: #2a2018; color: var(--yellow); }
+
+  /* Card container */
+  .card-scene {
+    width: 100%;
+    max-width: 680px;
+    perspective: 1200px;
+    min-height: 340px;
+  }
+  .card-inner {
+    position: relative;
+    width: 100%;
+    min-height: 340px;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+  .card-inner.flipped { transform: rotateY(180deg); }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 340px;
+    overflow: hidden;
+  }
+  .card-face.back {
+    transform: rotateY(180deg);
+    background: var(--surface2);
+    border-color: var(--accent);
+    overflow-y: auto;
+  }
+
+  .card-face .face-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .card-face.back .face-label { color: var(--accent); }
+
+  .card-title {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .card-hint {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: auto;
+    text-align: center;
+    padding-top: 12px;
+  }
+
+  .card-body {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+  .card-body strong { color: #fff; }
+  .card-body em { color: var(--text-muted); font-style: italic; }
+  .card-body ul, .card-body ol {
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .card-body li { line-height: 1.6; }
+  .card-body p { margin-bottom: 10px; }
+  .card-body p:last-child { margin-bottom: 0; }
+
+  /* Code blocks */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 8px;
+    padding: 14px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: #e6edf3;
+    white-space: pre;
+    tab-size: 4;
+  }
+  code {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: #79c0ff;
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Syntax colors in pre */
+  .kw { color: #ff7b72; }  /* keywords: def, if, for, return, from, import */
+  .str { color: #a5d6ff; } /* strings */
+  .cmt { color: #8b949e; font-style: italic; } /* comments */
+  .num { color: #79c0ff; } /* numbers */
+  .fn  { color: #d2a8ff; } /* function calls */
+  .cls { color: #ffa657; } /* class/types */
+
+  /* Tap hint */
+  .tap-hint {
+    position: absolute;
+    bottom: 16px;
+    right: 18px;
+    font-size: 12px;
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
+
+  /* Controls */
+  .controls {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .btn {
+    flex: 1;
+    padding: 14px 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .btn:active { transform: scale(0.96); background: var(--surface2); }
+  .btn.btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    flex: 2;
+  }
+  .btn.btn-primary:active { background: #4a7de0; }
+  .btn.btn-known {
+    background: transparent;
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .btn.btn-known:active { background: #1e2e1e; }
+  .btn.btn-shuffle {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text-muted);
+    flex: 1.2;
+  }
+
+  /* Second row */
+  .controls2 {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    gap: 10px;
+  }
+
+  /* Filter bar */
+  .filter-bar {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .filter-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: #1a2e45;
+  }
+  .filter-btn:active { opacity: 0.8; }
+
+  /* Known overlay */
+  .known-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(76, 175, 125, 0.15);
+    border: 2px solid var(--green);
+    border-radius: var(--radius);
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--green);
+    letter-spacing: 0.08em;
+    z-index: 10;
+  }
+  .card-scene.is-known .known-overlay { display: flex; }
+
+  /* Empty state */
+  .empty-state {
+    width: 100%;
+    max-width: 680px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* Responsive */
+  @media (min-width: 480px) {
+    .card-title { font-size: 24px; }
+    .card-body { font-size: 16px; }
+    pre, code { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Notion Python Refresher</h1>
+  <div class="meta">openai==0.27.8 · gpt-3.5-turbo</div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+</div>
+
+<div class="progress-label">
+  <span id="progressText">Card 1 of 18</span>
+  <span class="cat-badge" id="catBadge">stdlib</span>
+</div>
+
+<div class="card-scene" id="cardScene">
+  <div class="card-inner" id="cardInner" onclick="flipCard()">
+    <div class="card-face front" id="cardFront">
+      <div class="face-label">Question</div>
+      <div class="card-title" id="frontTitle"></div>
+      <div class="card-hint">Tap to reveal answer</div>
+    </div>
+    <div class="card-face back" id="cardBack">
+      <div class="face-label">Answer</div>
+      <div class="card-body" id="backBody"></div>
+      <div class="tap-hint">tap to flip</div>
+    </div>
+    <div class="known-overlay">KNOWN ✓</div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="btn" onclick="prevCard()">← Prev</button>
+  <button class="btn btn-primary" id="flipBtn" onclick="flipCard()">Flip</button>
+  <button class="btn" onclick="nextCard()">Next →</button>
+</div>
+
+<div class="controls2">
+  <button class="btn btn-known" onclick="markKnown()">Mark Known</button>
+  <button class="btn btn-shuffle" onclick="shuffle()">Shuffle</button>
+  <button class="btn btn-shuffle" onclick="resetKnown()" style="flex:1">Reset</button>
+</div>
+
+<div class="filter-bar" id="filterBar">
+  <button class="filter-btn active" onclick="setFilter('all')" data-filter="all">All (18)</button>
+  <button class="filter-btn" onclick="setFilter('stdlib')" data-filter="stdlib">Stdlib (12)</button>
+  <button class="filter-btn" onclick="setFilter('boilerplate')" data-filter="boilerplate">Boilerplate (6)</button>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// CARD DATA
+// ─────────────────────────────────────────────
+const CARDS = [
+  // ──── PYTHON STDLIB ────
+  {
+    id: "stdlib-json",
+    category: "stdlib",
+    front: "<code>json</code> — load from path, parse from string, dump pretty",
+    back: `<pre><span class="kw">import</span> json
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+
+data = json.<span class="fn">loads</span>(Path(<span class="str">"data.json"</span>).<span class="fn">read_text</span>())
+data = json.<span class="fn">loads</span>(<span class="str">'{"k": 1}'</span>)
+print(json.<span class="fn">dumps</span>(data, indent=<span class="num">2</span>, ensure_ascii=<span class="kw">False</span>))</pre>
+<p><strong>Gotcha:</strong> <code>json.load(f)</code> takes a file object; <code>json.loads(s)</code> takes a string. The trailing <code>s</code> = string.</p>`
+  },
+  {
+    id: "stdlib-zipfile",
+    category: "stdlib",
+    front: "<code>zipfile</code> — Notion sends a zipped JSON. Open it.",
+    back: `<pre><span class="kw">import</span> zipfile, json
+
+<span class="kw">with</span> zipfile.<span class="fn">ZipFile</span>(<span class="str">"db.zip"</span>) <span class="kw">as</span> z:
+    print(z.<span class="fn">namelist</span>())              <span class="cmt"># list inner files</span>
+    raw = z.<span class="fn">read</span>(<span class="str">"records.json"</span>)    <span class="cmt"># bytes</span>
+    data = json.<span class="fn">loads</span>(raw)</pre>
+<p><strong>Gotcha:</strong> <code>z.read()</code> returns <em>bytes</em>, not str. <code>json.loads</code> handles bytes since 3.6, so you don't need to decode.</p>`
+  },
+  {
+    id: "stdlib-pathlib",
+    category: "stdlib",
+    front: "<code>pathlib.Path</code> — read, write, glob, exists",
+    back: `<pre><span class="kw">from</span> pathlib <span class="kw">import</span> Path
+
+p = Path(<span class="str">"data/records.json"</span>)
+text = p.<span class="fn">read_text</span>()
+p.<span class="fn">write_text</span>(json.<span class="fn">dumps</span>(data, indent=<span class="num">2</span>))
+
+<span class="kw">for</span> f <span class="kw">in</span> Path(<span class="str">"."</span>).<span class="fn">glob</span>(<span class="str">"*.json"</span>):
+    print(f.name, f.<span class="fn">stat</span>().st_size)
+
+<span class="kw">if</span> p.<span class="fn">exists</span>(): ...</pre>
+<p>Cleaner than <code>open()</code> for one-shot reads. Use <code>open()</code> when you need streaming.</p>`
+  },
+  {
+    id: "stdlib-listcomp",
+    category: "stdlib",
+    front: "List comprehensions — filter, map, conditional expression",
+    back: `<pre><span class="cmt"># filter</span>
+nums = [n <span class="kw">for</span> n <span class="kw">in</span> data <span class="kw">if</span> n &gt; <span class="num">10</span>]
+
+<span class="cmt"># map</span>
+names = [r[<span class="str">"name"</span>].<span class="fn">lower</span>() <span class="kw">for</span> r <span class="kw">in</span> records]
+
+<span class="cmt"># conditional expression INSIDE</span>
+labels = [<span class="str">"hi"</span> <span class="kw">if</span> n &gt; <span class="num">0</span> <span class="kw">else</span> <span class="str">"lo"</span> <span class="kw">for</span> n <span class="kw">in</span> nums]
+
+<span class="cmt"># both: filter THEN map</span>
+out = [r[<span class="str">"name"</span>] <span class="kw">for</span> r <span class="kw">in</span> records <span class="kw">if</span> r[<span class="str">"active"</span>]]</pre>
+<p><strong>Gotcha:</strong> the <code>if/else</code> ternary goes <em>before</em> the <code>for</code>; the filter <code>if</code> goes <em>after</em>. Different positions, easy to flip.</p>`
+  },
+  {
+    id: "stdlib-dictcomp",
+    category: "stdlib",
+    front: "Dict comprehensions + <code>dict.get(key, default)</code>",
+    back: `<pre><span class="cmt"># dict comprehension</span>
+by_id = {r[<span class="str">"id"</span>]: r <span class="kw">for</span> r <span class="kw">in</span> records}
+
+<span class="cmt"># filter while building</span>
+active = {r[<span class="str">"id"</span>]: r <span class="kw">for</span> r <span class="kw">in</span> records <span class="kw">if</span> r[<span class="str">"active"</span>]}
+
+<span class="cmt"># safe key access</span>
+name = record.<span class="fn">get</span>(<span class="str">"name"</span>, <span class="str">"&lt;unknown&gt;"</span>)
+tags = record.<span class="fn">get</span>(<span class="str">"tags"</span>, [])
+<span class="kw">for</span> t <span class="kw">in</span> tags: ...</pre>
+<p><strong>Gotcha:</strong> <code>dict.get</code> returns <code>None</code> if you don't pass a default — easy to iterate over <code>None</code> by accident. Pass <code>[]</code> or <code>{}</code> when you'll iterate.</p>`
+  },
+  {
+    id: "stdlib-enumerate-zip",
+    category: "stdlib",
+    front: "<code>enumerate</code> vs <code>zip</code> — when each",
+    back: `<pre><span class="cmt"># enumerate: index + value, when you need the position</span>
+<span class="kw">for</span> i, record <span class="kw">in</span> <span class="fn">enumerate</span>(records):
+    print(<span class="str">f"{i}: {record['name']}"</span>)
+
+<span class="cmt"># zip: parallel iteration of multiple iterables</span>
+<span class="kw">for</span> name, score <span class="kw">in</span> <span class="fn">zip</span>(names, scores):
+    ...
+
+<span class="cmt"># both</span>
+<span class="kw">for</span> i, (name, score) <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="fn">zip</span>(names, scores)):
+    ...</pre>
+<p><strong>Gotcha:</strong> <code>zip</code> stops at the shortest iterable silently. Pass <code>strict=True</code> (3.10+) to raise on mismatch.</p>`
+  },
+  {
+    id: "stdlib-dataclasses",
+    category: "stdlib",
+    front: "<code>dataclasses</code> — Notion's boilerplate uses these",
+    back: `<pre><span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass, asdict, field
+
+<span class="dec">@dataclass</span>
+<span class="kw">class</span> Record:
+    id: <span class="kw">int</span>
+    name: <span class="kw">str</span>
+    tags: <span class="kw">list</span>[<span class="kw">str</span>] = field(default_factory=<span class="kw">list</span>)
+
+r = <span class="fn">Record</span>(id=<span class="num">1</span>, name=<span class="str">"a"</span>)
+d = <span class="fn">asdict</span>(r)               <span class="cmt"># -&gt; dict</span>
+r2 = <span class="fn">Record</span>(**d)             <span class="cmt"># dict -&gt; instance</span></pre>
+<p><strong>Gotcha:</strong> mutable defaults must use <code>field(default_factory=list)</code>, not <code>= []</code>. Notion's boilerplate uses <code>asdict</code> in <code>Transcript.raw()</code> to flatten.</p>`
+  },
+  {
+    id: "stdlib-typing",
+    category: "stdlib",
+    front: "<code>typing.Literal</code>, <code>Optional</code>, <code>|</code> unions",
+    back: `<pre><span class="kw">from</span> typing <span class="kw">import</span> Literal, Optional
+
+<span class="cmt"># Literal: only these values allowed</span>
+role: Literal[<span class="str">"system"</span>, <span class="str">"user"</span>, <span class="str">"assistant"</span>]
+
+<span class="cmt"># Optional[X] is just X | None</span>
+name: Optional[<span class="kw">str</span>] = <span class="kw">None</span>
+name: <span class="kw">str</span> | <span class="kw">None</span> = <span class="kw">None</span>      <span class="cmt"># 3.10+</span>
+
+<span class="cmt"># Notion boilerplate uses both styles:</span>
+refusal: <span class="kw">str</span> | <span class="kw">None</span> = <span class="kw">None</span></pre>
+<p>Type hints are optional at runtime — they don't enforce anything. They're for tools (mypy, IDE) and readers.</p>`
+  },
+  {
+    id: "stdlib-re",
+    category: "stdlib",
+    front: "<code>re</code> — match, findall, sub with callback",
+    back: `<pre><span class="kw">import</span> re
+
+m = re.<span class="fn">match</span>(<span class="str">r"(\\d+)-(\\w+)"</span>, <span class="str">"42-foo"</span>)
+<span class="kw">if</span> m: m.<span class="fn">group</span>(<span class="num">1</span>), m.<span class="fn">group</span>(<span class="num">2</span>)   <span class="cmt"># "42", "foo"</span>
+
+re.<span class="fn">findall</span>(<span class="str">r"\\d+"</span>, text)             <span class="cmt"># list of all matches</span>
+
+<span class="cmt"># sub with a callback</span>
+re.<span class="fn">sub</span>(<span class="str">r"\\d+"</span>, <span class="kw">lambda</span> m: <span class="kw">str</span>(<span class="kw">int</span>(m.<span class="fn">group</span>())*<span class="num">2</span>), text)</pre>
+<p><strong>Gotcha:</strong> <code>re.match</code> only matches at the start of the string. Use <code>re.search</code> to find anywhere.</p>`
+  },
+  {
+    id: "stdlib-argparse",
+    category: "stdlib",
+    front: "<code>argparse</code> — minimal CLI",
+    back: `<pre><span class="kw">import</span> argparse
+
+p = argparse.<span class="fn">ArgumentParser</span>()
+p.<span class="fn">add_argument</span>(<span class="str">"query"</span>)                    <span class="cmt"># positional</span>
+p.<span class="fn">add_argument</span>(<span class="str">"--top-k"</span>, <span class="kw">type</span>=<span class="kw">int</span>, default=<span class="num">5</span>)
+p.<span class="fn">add_argument</span>(<span class="str">"--verbose"</span>, action=<span class="str">"store_true"</span>)
+
+args = p.<span class="fn">parse_args</span>()
+print(args.query, args.top_k, args.verbose)</pre>
+<p>For the Notion exercise you may not need argparse — they pass query via <code>sys.argv[1:]</code>. But if you build a real CLI, this is the shape.</p>`
+  },
+  {
+    id: "stdlib-counter",
+    category: "stdlib",
+    front: "<code>collections.Counter</code> — most_common, increment-by-key",
+    back: `<pre><span class="kw">from</span> collections <span class="kw">import</span> Counter
+
+c = <span class="fn">Counter</span>(r[<span class="str">"category"</span>] <span class="kw">for</span> r <span class="kw">in</span> records)
+c.<span class="fn">most_common</span>(<span class="num">3</span>)            <span class="cmt"># [("a", 12), ("b", 7), ...]</span>
+
+<span class="cmt"># increment</span>
+c[<span class="str">"foo"</span>] += <span class="num">1</span>             <span class="cmt"># works even if "foo" not yet in c</span>
+
+<span class="cmt"># merge two counters</span>
+total = c1 + c2</pre>
+<p>Counter subclasses dict, so <code>c["missing"]</code> returns <code>0</code> instead of raising — perfect for tallying.</p>`
+  },
+  {
+    id: "stdlib-defaultdict",
+    category: "stdlib",
+    front: "<code>collections.defaultdict(list)</code> — append-by-key",
+    back: `<pre><span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+
+groups = <span class="fn">defaultdict</span>(<span class="kw">list</span>)
+<span class="kw">for</span> r <span class="kw">in</span> records:
+    groups[r[<span class="str">"category"</span>]].<span class="fn">append</span>(r)
+
+<span class="cmt"># defaultdict(set), defaultdict(int) also common</span>
+counts = <span class="fn">defaultdict</span>(<span class="kw">int</span>)
+counts[k] += <span class="num">1</span>          <span class="cmt"># like Counter but lighter</span></pre>
+<p><strong>Gotcha:</strong> looking up a missing key on a <code>defaultdict</code> <em>creates</em> it. Use <code>dict.get(k)</code> if you don't want side effects.</p>`
+  },
+
+  // ──── NOTION BOILERPLATE ────
+  {
+    id: "boilerplate-transcript-raw",
+    category: "boilerplate",
+    front: "<code>Transcript.raw()</code> — what does it return and why?",
+    back: `<pre><span class="kw">class</span> Transcript(<span class="kw">list</span>[Message]):
+    <span class="kw">def</span> <span class="fn">raw</span>(<span class="kw">self</span>) -&gt; <span class="kw">list</span>[<span class="kw">dict</span>]:
+        <span class="kw">return</span> [<span class="fn">asdict</span>(m) <span class="kw">for</span> m <span class="kw">in</span> <span class="kw">self</span>]</pre>
+<p>It flattens each <code>Message</code> dataclass to a <code>dict</code> via <code>asdict</code>, giving you the shape OpenAI's API wants:</p>
+<pre>[{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"hi"</span>, <span class="str">"refusal"</span>: <span class="kw">None</span>, <span class="str">"annotations"</span>: <span class="kw">None</span>}, ...]</pre>
+<p>The <code>refusal</code> and <code>annotations</code> fields don't hurt — OpenAI ignores extras. The <code>role</code> + <code>content</code> are the only required keys.</p>`
+  },
+  {
+    id: "boilerplate-from-response",
+    category: "boilerplate",
+    front: "<code>Message.from_response(response)</code> — what shape does the 0.27.x response have?",
+    back: `<p>The OpenAI 0.27.x response is a <strong>dict-like</strong> (technically <code>OpenAIObject</code>, but indexes like a dict):</p>
+<pre>{
+  <span class="str">"id"</span>: <span class="str">"chatcmpl-..."</span>,
+  <span class="str">"choices"</span>: [{
+    <span class="str">"index"</span>: <span class="num">0</span>,
+    <span class="str">"message"</span>: {<span class="str">"role"</span>: <span class="str">"assistant"</span>, <span class="str">"content"</span>: <span class="str">"hi"</span>},
+    <span class="str">"finish_reason"</span>: <span class="str">"stop"</span>
+  }],
+  <span class="str">"usage"</span>: {<span class="str">"prompt_tokens"</span>: ..., <span class="str">"completion_tokens"</span>: ...}
+}</pre>
+<p><code>response[<span class="str">"choices"</span>][<span class="num">0</span>][<span class="str">"message"</span>]</code> is a dict with keys <code>role</code>, <code>content</code>. <code>Message(**that_dict)</code> rebuilds the dataclass.</p>
+<p><strong>NOT pydantic.</strong> That's openai 1.x — different API.</p>`
+  },
+  {
+    id: "boilerplate-system-prompt",
+    category: "boilerplate",
+    front: "How do I add a system prompt to the conversation?",
+    back: `<pre><span class="cmt"># Prepend a Message("system", ...) BEFORE the first chat_step call.</span>
+transcript = <span class="fn">Transcript</span>([
+    <span class="fn">Message</span>(<span class="str">"system"</span>, <span class="str">"You are a search assistant. Reply with JSON only."</span>),
+    <span class="fn">Message</span>(<span class="str">"user"</span>, query),
+])
+<span class="fn">chat_step</span>(transcript)</pre>
+<p>You can change the system prompt mid-conversation by editing <code>transcript[0].content</code> — but most models pay attention to it most strongly when it's set up front.</p>
+<p><strong>For database search:</strong> include schema/example records in the system prompt so the model knows the shape.</p>`
+  },
+  {
+    id: "boilerplate-multi-turn",
+    category: "boilerplate",
+    front: "How do I make <code>chat_step</code> multi-turn?",
+    back: `<pre>transcript = <span class="fn">Transcript</span>([
+    <span class="fn">Message</span>(<span class="str">"system"</span>, system_prompt),
+])
+
+<span class="kw">while</span> <span class="kw">True</span>:
+    user_input = <span class="fn">input</span>(<span class="str">"&gt; "</span>)
+    <span class="kw">if</span> <span class="kw">not</span> user_input: <span class="kw">break</span>
+    transcript.<span class="fn">append</span>(<span class="fn">Message</span>(<span class="str">"user"</span>, user_input))
+    <span class="fn">chat_step</span>(transcript)
+    <span class="cmt"># chat_step appends the assistant Message to transcript already</span></pre>
+<p><code>chat_step</code> mutates the transcript — it appends the assistant reply. So the next iteration's API call sees the full history automatically.</p>
+<p><strong>Gotcha:</strong> token budget grows linearly. For long sessions, drop or summarize old turns.</p>`
+  },
+  {
+    id: "boilerplate-inject-row",
+    category: "boilerplate",
+    front: "How do I inject a database row into a user prompt?",
+    back: `<pre><span class="cmt"># Just JSON-serialize and string-format. No magic.</span>
+context = json.<span class="fn">dumps</span>(matching_records, indent=<span class="num">2</span>)
+prompt = <span class="str">f"""Question: {user_query}
+
+Records (JSON):
+{context}
+
+Answer based ONLY on these records."""</span>
+transcript.<span class="fn">append</span>(<span class="fn">Message</span>(<span class="str">"user"</span>, prompt))
+<span class="fn">chat_step</span>(transcript)</pre>
+<p><strong>For the search exercise:</strong> typical loop is <em>(1)</em> ask the LLM what fields/keywords to filter on, <em>(2)</em> filter records in Python, <em>(3)</em> inject the filtered subset into a follow-up prompt. Don't dump the whole DB — token cost.</p>`
+  },
+  {
+    id: "boilerplate-create-signature",
+    category: "boilerplate",
+    front: "<code>openai.ChatCompletion.create</code> — 0.27.x signature",
+    back: `<pre><span class="kw">import</span> openai
+openai.api_key = <span class="str">"sk-..."</span>           <span class="cmt"># module-level, not a client</span>
+
+resp = openai.ChatCompletion.<span class="fn">create</span>(
+    model=<span class="str">"gpt-3.5-turbo"</span>,
+    messages=[
+        {<span class="str">"role"</span>: <span class="str">"system"</span>, <span class="str">"content"</span>: <span class="str">"..."</span>},
+        {<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"hi"</span>},
+    ],
+    temperature=<span class="num">0.7</span>,             <span class="cmt"># optional</span>
+    max_tokens=<span class="num">500</span>,              <span class="cmt"># optional</span>
+)
+text = resp[<span class="str">"choices"</span>][<span class="num">0</span>][<span class="str">"message"</span>][<span class="str">"content"</span>]</pre>
+<p><strong>0.27.x ≠ 1.x.</strong> No <code>OpenAI()</code> client. No <code>resp.choices[0].message</code> attribute access. Index like a dict. <code>openai.api_key = ...</code> at module level.</p>`
+  },
+];
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let allCards = [...CARDS];
+let deck = [...CARDS];
+let currentIdx = 0;
+let isFlipped = false;
+let knownSet = new Set();
+let currentFilter = 'all';
+
+function buildDeck() {
+  deck = allCards.filter(c => {
+    if (knownSet.has(c.id)) return false;
+    if (currentFilter === 'all') return true;
+    return c.category === currentFilter;
+  });
+  if (deck.length === 0) {
+    // Show all in the filter even if known
+    deck = allCards.filter(c => {
+      if (currentFilter === 'all') return true;
+      return c.category === currentFilter;
+    });
+  }
+}
+
+function renderCard() {
+  if (deck.length === 0) {
+    document.getElementById('cardScene').style.display = 'none';
+    return;
+  }
+  document.getElementById('cardScene').style.display = '';
+  const card = deck[currentIdx];
+  if (!card) { currentIdx = 0; }
+  const c = deck[currentIdx];
+
+  document.getElementById('frontTitle').textContent = c.front;
+  document.getElementById('backBody').innerHTML = c.back;
+
+  // Reset flip
+  isFlipped = false;
+  document.getElementById('cardInner').classList.remove('flipped');
+
+  // Progress
+  const total = deck.length;
+  const pos = currentIdx + 1;
+  document.getElementById('progressText').textContent = `Card ${pos} of ${total}`;
+  const pct = Math.round((pos / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  // Category badge
+  const badge = document.getElementById('catBadge');
+  const catMap = { '1min': '1-min', '2min': '2-min', '5min': '5-min', 'gotcha': 'Gotcha' };
+  badge.textContent = catMap[c.category] || c.category;
+  badge.className = 'cat-badge cat-' + c.category;
+
+  // Known indicator
+  const scene = document.getElementById('cardScene');
+  if (knownSet.has(c.id)) {
+    scene.classList.add('is-known');
+  } else {
+    scene.classList.remove('is-known');
+  }
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('cardInner').classList.toggle('flipped', isFlipped);
+}
+
+function nextCard() {
+  currentIdx = (currentIdx + 1) % deck.length;
+  renderCard();
+}
+
+function prevCard() {
+  currentIdx = (currentIdx - 1 + deck.length) % deck.length;
+  renderCard();
+}
+
+function shuffle() {
+  // Fisher-Yates
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  currentIdx = 0;
+  renderCard();
+}
+
+function markKnown() {
+  const card = deck[currentIdx];
+  if (!card) return;
+  if (knownSet.has(card.id)) {
+    knownSet.delete(card.id);
+  } else {
+    knownSet.add(card.id);
+  }
+  renderCard();
+}
+
+function resetKnown() {
+  knownSet.clear();
+  buildDeck();
+  currentIdx = 0;
+  renderCard();
+}
+
+function setFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === filter);
+  });
+  buildDeck();
+  currentIdx = 0;
+  renderCard();
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'n') nextCard();
+  else if (e.key === 'ArrowLeft' || e.key === 'p') prevCard();
+  else if (e.key === ' ' || e.key === 'f') { e.preventDefault(); flipCard(); }
+  else if (e.key === 'k') markKnown();
+  else if (e.key === 's') shuffle();
+});
+
+// Swipe support
+let touchStartX = 0;
+document.getElementById('cardScene').addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].clientX;
+}, { passive: true });
+document.getElementById('cardScene').addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 50) {
+    if (dx < 0) nextCard();
+    else prevCard();
+  }
+}, { passive: true });
+
+// Init
+buildDeck();
+renderCard();
+</script>
+</body>
+</html>
