@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Flora Interview Deck</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #242837;
+    --border: #2e3245;
+    --accent: #5b8dee;
+    --accent2: #7c4dff;
+    --green: #4caf7d;
+    --yellow: #f0b429;
+    --red: #f06464;
+    --text: #e8eaf6;
+    --text-muted: #8891b4;
+    --code-bg: #0d1117;
+    --code-border: #21262d;
+    --radius: 14px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    gap: 12px;
+    overflow-x: hidden;
+  }
+
+  /* Header */
+  .header {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 4px;
+  }
+  .header h1 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+  .header .meta { font-size: 13px; color: var(--text-muted); }
+
+  /* Progress */
+  .progress-bar-wrap {
+    width: 100%;
+    max-width: 680px;
+    background: var(--surface);
+    border-radius: 100px;
+    height: 4px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 100px;
+    transition: width 0.3s ease;
+  }
+  .progress-label {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 0 2px;
+  }
+  .progress-label .cat-badge {
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--surface2);
+    color: var(--text-muted);
+  }
+  .progress-label .cat-badge.cat-1min { background: #1a2e45; color: var(--accent); }
+  .progress-label .cat-badge.cat-2min { background: #1e2a1e; color: var(--green); }
+  .progress-label .cat-badge.cat-5min { background: #2a1e2a; color: #cc88ff; }
+  .progress-label .cat-badge.cat-gotcha { background: #2a2018; color: var(--yellow); }
+
+  /* Card container */
+  .card-scene {
+    width: 100%;
+    max-width: 680px;
+    perspective: 1200px;
+    min-height: 340px;
+  }
+  .card-inner {
+    position: relative;
+    width: 100%;
+    min-height: 340px;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+  .card-inner.flipped { transform: rotateY(180deg); }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 340px;
+    overflow: hidden;
+  }
+  .card-face.back {
+    transform: rotateY(180deg);
+    background: var(--surface2);
+    border-color: var(--accent);
+    overflow-y: auto;
+  }
+
+  .card-face .face-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .card-face.back .face-label { color: var(--accent); }
+
+  .card-title {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .card-hint {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: auto;
+    text-align: center;
+    padding-top: 12px;
+  }
+
+  .card-body {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+  .card-body strong { color: #fff; }
+  .card-body em { color: var(--text-muted); font-style: italic; }
+  .card-body ul, .card-body ol {
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .card-body li { line-height: 1.6; }
+  .card-body p { margin-bottom: 10px; }
+  .card-body p:last-child { margin-bottom: 0; }
+
+  /* Code blocks */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 8px;
+    padding: 14px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: #e6edf3;
+    white-space: pre;
+    tab-size: 4;
+  }
+  code {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: #79c0ff;
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Syntax colors in pre */
+  .kw { color: #ff7b72; }  /* keywords: def, if, for, return, from, import */
+  .str { color: #a5d6ff; } /* strings */
+  .cmt { color: #8b949e; font-style: italic; } /* comments */
+  .num { color: #79c0ff; } /* numbers */
+  .fn  { color: #d2a8ff; } /* function calls */
+  .cls { color: #ffa657; } /* class/types */
+
+  /* Tap hint */
+  .tap-hint {
+    position: absolute;
+    bottom: 16px;
+    right: 18px;
+    font-size: 12px;
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
+
+  /* Controls */
+  .controls {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .btn {
+    flex: 1;
+    padding: 14px 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .btn:active { transform: scale(0.96); background: var(--surface2); }
+  .btn.btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    flex: 2;
+  }
+  .btn.btn-primary:active { background: #4a7de0; }
+  .btn.btn-known {
+    background: transparent;
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .btn.btn-known:active { background: #1e2e1e; }
+  .btn.btn-shuffle {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text-muted);
+    flex: 1.2;
+  }
+
+  /* Second row */
+  .controls2 {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    gap: 10px;
+  }
+
+  /* Filter bar */
+  .filter-bar {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .filter-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: #1a2e45;
+  }
+  .filter-btn:active { opacity: 0.8; }
+
+  /* Known overlay */
+  .known-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(76, 175, 125, 0.15);
+    border: 2px solid var(--green);
+    border-radius: var(--radius);
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--green);
+    letter-spacing: 0.08em;
+    z-index: 10;
+  }
+  .card-scene.is-known .known-overlay { display: flex; }
+
+  /* Empty state */
+  .empty-state {
+    width: 100%;
+    max-width: 680px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* Responsive */
+  @media (min-width: 480px) {
+    .card-title { font-size: 24px; }
+    .card-body { font-size: 16px; }
+    pre, code { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Flora Interview Deck</h1>
+  <div class="meta">Apr 28 · 3 PM EDT</div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+</div>
+
+<div class="progress-label">
+  <span id="progressText">Card 1 of 52</span>
+  <span class="cat-badge" id="catBadge">1-min</span>
+</div>
+
+<div class="card-scene" id="cardScene">
+  <div class="card-inner" id="cardInner" onclick="flipCard()">
+    <div class="card-face front" id="cardFront">
+      <div class="face-label">Question</div>
+      <div class="card-title" id="frontTitle"></div>
+      <div class="card-hint">Tap to reveal answer</div>
+    </div>
+    <div class="card-face back" id="cardBack">
+      <div class="face-label">Answer</div>
+      <div class="card-body" id="backBody"></div>
+      <div class="tap-hint">tap to flip</div>
+    </div>
+    <div class="known-overlay">KNOWN ✓</div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="btn" onclick="prevCard()">← Prev</button>
+  <button class="btn btn-primary" id="flipBtn" onclick="flipCard()">Flip</button>
+  <button class="btn" onclick="nextCard()">Next →</button>
+</div>
+
+<div class="controls2">
+  <button class="btn btn-known" onclick="markKnown()">Mark Known</button>
+  <button class="btn btn-shuffle" onclick="shuffle()">Shuffle</button>
+  <button class="btn btn-shuffle" onclick="resetKnown()" style="flex:1">Reset</button>
+</div>
+
+<div class="filter-bar" id="filterBar">
+  <button class="filter-btn active" onclick="setFilter('all')" data-filter="all">All</button>
+  <button class="filter-btn" onclick="setFilter('1min')" data-filter="1min">1-min</button>
+  <button class="filter-btn" onclick="setFilter('2min')" data-filter="2min">2-min</button>
+  <button class="filter-btn" onclick="setFilter('5min')" data-filter="5min">5-min</button>
+  <button class="filter-btn" onclick="setFilter('gotcha')" data-filter="gotcha">Gotchas</button>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// CARD DATA
+// ─────────────────────────────────────────────
+const CARDS = [
+  // ──── 1-MINUTE CARDS ────
+  {
+    id: "1min-1",
+    category: "1min",
+    front: "The 60-minute time budget — what are the phases?",
+    back: `<p><strong>0–7 min:</strong> Read everything. Ask 3 clarifying questions. Don't touch the keyboard.</p>
+<p><strong>7–12 min:</strong> Write your plan in comments, narrate it.</p>
+<p><strong>12–35 min:</strong> Build core logic. Run tests after each function.</p>
+<p><strong>35–47 min:</strong> Edge cases — empty input, nulls, malformed records.</p>
+<p><strong>47–58 min:</strong> "At 10M records, here's what I'd change…"</p>
+<p><strong>58–60 min:</strong> Wrap, invite their questions.</p>
+<p><strong>The phase you'll skip under pressure: the clarify phase. Don't.</strong></p>`
+  },
+  {
+    id: "1min-2",
+    category: "1min",
+    front: "First 5 minutes rule — what do you do before touching the keyboard?",
+    back: `<p>Ask three <em>specific</em> questions before writing a line:</p>
+<ul>
+  <li>"Can the input be empty? Return empty list or None?"</li>
+  <li>"Is timestamp epoch int or ISO string?"</li>
+  <li>"Does 'successful' mean 200 exactly or 2xx range?"</li>
+</ul>
+<p><strong>Evaluators watch for this. It's the single biggest signal of senior thinking.</strong></p>
+<p>Not "are there edge cases?" — that's too vague. Be specific.</p>`
+  },
+  {
+    id: "1min-3",
+    category: "gotcha",
+    front: "Python gotcha: json.load vs json.loads — which is which?",
+    back: `<p><code>json.load(f)</code> → takes a <strong>file object</strong> (use inside <code>with open(...)</code>)</p>
+<p><code>json.loads(s)</code> → takes a <strong>string</strong></p>
+<pre><span class="kw">with</span> open(<span class="str">'data.json'</span>) <span class="kw">as</span> f:
+    data = json.<span class="fn">load</span>(f)       <span class="cmt"># FILE</span>
+data = json.<span class="fn">loads</span>(<span class="str">'{"k":1}'</span>)  <span class="cmt"># STRING</span></pre>
+<p><strong>You've mixed these up under stress before. Say it once before you type it.</strong></p>`
+  },
+  {
+    id: "1min-4",
+    category: "gotcha",
+    front: "Python gotcha: collections imports — name the four you'll need",
+    back: `<pre><span class="kw">from</span> collections <span class="kw">import</span> defaultdict, Counter, deque, OrderedDict</pre>
+<ul>
+  <li><strong>defaultdict(list)</strong> → grouping</li>
+  <li><strong>deque</strong> → sliding windows (O(1) pop from left)</li>
+  <li><strong>Counter</strong> → frequency counting</li>
+  <li><strong>OrderedDict</strong> → insertion-order dict (Python 3.7+ dicts are ordered anyway)</li>
+</ul>
+<p>No external libraries. Only stdlib. This is your toolbox.</p>`
+  },
+  {
+    id: "1min-5",
+    category: "1min",
+    front: "The grouping pattern — write it from memory",
+    back: `<pre>groups = <span class="fn">defaultdict</span>(list)
+<span class="kw">for</span> r <span class="kw">in</span> records:
+    groups[r[<span class="str">'key'</span>]].<span class="fn">append</span>(r)</pre>
+<p><strong>This is the skeleton of 80% of Systems-Data problems.</strong> Memorize the shape.</p>
+<p>After grouping: sort within each group, or compute an aggregate. That's it.</p>
+<p>Applies to: log parsing, event pipelines, asset grouping, rate detection — all of these.</p>`
+  },
+  {
+    id: "1min-6",
+    category: "1min",
+    front: "The sliding window pattern (deque) — write the core loop",
+    back: `<pre>window = <span class="fn">deque</span>()
+<span class="kw">for</span> ts <span class="kw">in</span> sorted_timestamps:
+    window.<span class="fn">append</span>(ts)
+    <span class="kw">while</span> window <span class="kw">and</span> ts - window[<span class="num">0</span>] &gt; WINDOW_SIZE:
+        window.<span class="fn">popleft</span>()
+    <span class="kw">if</span> <span class="fn">len</span>(window) &gt; THRESHOLD:
+        <span class="kw">pass</span>  <span class="cmt"># violation</span></pre>
+<p><strong>Evict from the left, grow from the right. That's the whole move.</strong></p>
+<p>Use case: rate-limiting, abuse detection, sliding time windows.</p>`
+  },
+  {
+    id: "1min-7",
+    category: "1min",
+    front: "Trade-off narration template — what do you say when making a data structure choice?",
+    back: `<p><strong>"I'm using [X] here — that's O(Y). If we needed real-time instead of batch, I'd switch to [Z]."</strong></p>
+<p>Examples:</p>
+<ul>
+  <li>sorted list → "O(n log n). Fine for batch."</li>
+  <li>defaultdict → "O(1) lookup on insert. Better than scanning a list."</li>
+  <li>deque → "O(1) pop from left. Lists would be O(n)."</li>
+</ul>
+<p>Evaluators are listening for reasoning, not just output.</p>`
+  },
+  {
+    id: "1min-8",
+    category: "1min",
+    front: "Run code early — what's the move after each helper function?",
+    back: `<p><strong>After every helper function, run it with a tiny test case before moving on.</strong></p>
+<pre><span class="cmt"># Quick sanity check before I continue</span>
+<span class="fn">print</span>(<span class="fn">parse_events</span>([{<span class="str">"job_id"</span>: <span class="str">"1"</span>, <span class="str">"event"</span>: <span class="str">"QUEUED"</span>, <span class="str">"ts"</span>: <span class="num">100</span>}]))</pre>
+<p>Don't wait for "done." Test iteratively — bugs caught at 15 min are free. Bugs caught at 50 min are fatal.</p>`
+  },
+  {
+    id: "1min-9",
+    category: "gotcha",
+    front: "Safe dict access — how do you avoid KeyError on unknown input?",
+    back: `<pre><span class="cmt"># Always .get() with a fallback</span>
+value = record.<span class="fn">get</span>(<span class="str">'field'</span>, default_value)
+
+<span class="cmt"># Safe nested access (handles missing metadata entirely)</span>
+nested = record.<span class="fn">get</span>(<span class="str">'metadata'</span>, {}).<span class="fn">get</span>(<span class="str">'width'</span>)</pre>
+<p><strong>Never index directly into a dict from unknown input.</strong> Always <code>.get()</code> with a fallback.</p>
+<p>If <code>metadata</code> is missing entirely, <code>.get('metadata', {})</code> returns <code>{}</code> and the second <code>.get('width')</code> returns <code>None</code> safely.</p>`
+  },
+  {
+    id: "1min-10",
+    category: "1min",
+    front: '"Check before you optimize" — what do you say after core implementation?',
+    back: `<p><strong>"Before I add edge-case handling, does the basic approach look right to you?"</strong></p>
+<p>This does two things:</p>
+<ol>
+  <li>Prevents polishing the wrong solution</li>
+  <li>Signals collaborative instinct — important for a senior role on a 50-person team</li>
+</ol>
+<p>One human is watching. Use them.</p>`
+  },
+  {
+    id: "1min-11",
+    category: "1min",
+    front: '"Systems-Data" — what does each word actually mean?',
+    back: `<p><strong>"Data"</strong> = structured records, JSON/CSV, grouping, filtering, timestamps, missing fields.</p>
+<p><strong>"Systems"</strong> = state across records, ordering concerns, volume/scale nudges, trade-off questions.</p>
+<p><strong>NOT Leetcode hard. NOT trees or graphs. NOT DP.</strong></p>
+<p>If the problem looks like abstract algorithm work, slow down and reframe it as a data problem.</p>
+<p>Reframing the problem correctly is half the score.</p>`
+  },
+  {
+    id: "1min-12",
+    category: "1min",
+    front: "If you're behind at the 35-min mark — what's the senior move?",
+    back: `<p><strong>Say it out loud: "I'm going to skip error-handling for now and come back if there's time."</strong></p>
+<p>Don't silently cut corners. Narrating the trade-off scores better than silent omission.</p>
+<p>Then:</p>
+<ol>
+  <li>Finish core logic</li>
+  <li>Name what's missing</li>
+  <li>Move to edge cases you CAN hit</li>
+</ol>
+<p>Senior engineers communicate under pressure. This is the senior move.</p>`
+  },
+  {
+    id: "1min-13",
+    category: "gotcha",
+    front: "Sorting syntax — single key and multi-key, write both",
+    back: `<pre><span class="cmt"># Single key</span>
+<span class="fn">sorted</span>(items, key=<span class="kw">lambda</span> x: x[<span class="str">'score'</span>], reverse=<span class="kw">True</span>)
+
+<span class="cmt"># Multi-key (group asc, score desc)</span>
+<span class="fn">sorted</span>(items, key=<span class="kw">lambda</span> x: (x[<span class="str">'group'</span>], -x[<span class="str">'score'</span>]))</pre>
+<p><strong>The lambda syntax is what trips people up.</strong> Write it once in your warm-up block.</p>
+<p>Every aggregation problem ends with a sort.</p>`
+  },
+  {
+    id: "1min-14",
+    category: "gotcha",
+    front: "Python gotcha: sorted() vs .sort() — what's the key difference?",
+    back: `<p><code>sorted(items)</code> → returns a <strong>new list</strong>, original unchanged.</p>
+<p><code>items.sort()</code> → mutates in place, <strong>returns None</strong>.</p>
+<p><strong>Common trap:</strong></p>
+<pre>result = items.<span class="fn">sort</span>()  <span class="cmt"># result is None!</span>
+<span class="fn">print</span>(result)           <span class="cmt"># None — not what you wanted</span></pre>
+<p>Use <code>sorted()</code> in almost all interview contexts unless you explicitly want mutation.</p>`
+  },
+  {
+    id: "1min-15",
+    category: "1min",
+    front: '"Why Flora?" — one-sentence version',
+    back: `<p><strong>"I'm drawn to tools that make experts more powerful rather than replacing them — FAUNA's model-agnostic approach is the right framing for this moment. And I want to be somewhere where I'm actually building."</strong></p>
+<p>Don't over-explain. Deliver it, move on. The coding is the real answer.</p>`
+  },
+
+  // ──── 2-MINUTE CARDS ────
+  {
+    id: "2min-1",
+    category: "2min",
+    front: "The clarifying-questions framework — 5 categories, pick the 3 most relevant",
+    back: `<ol>
+  <li><strong>Input shape:</strong> "What format is the input — file, list, stdin? JSON or CSV?"</li>
+  <li><strong>Output contract:</strong> "What should I return — a dict, a list, print to stdout?"</li>
+  <li><strong>Edge case pre-flight:</strong> "Can the input be empty? Duplicate IDs? Out-of-order events?"</li>
+  <li><strong>Domain ambiguity:</strong> "Does 'successful' mean 200 or 2xx? Can a job have multiple STARTED events?"</li>
+  <li><strong>Volume signal:</strong> "You mentioned 10M records — optimize for memory, or is batch fine?"</li>
+</ol>
+<p>Don't ask all five. Pick the three most relevant. The goal is to signal you think before you code — not to interrogate them.</p>`
+  },
+  {
+    id: "2min-2",
+    category: "2min",
+    front: "Write your plan in comments first — what does the comment block look like?",
+    back: `<pre><span class="cmt"># Plan:</span>
+<span class="cmt"># 1. Parse input into list of dicts</span>
+<span class="cmt"># 2. Group events by job_id using defaultdict</span>
+<span class="cmt"># 3. For each job, compute duration if both QUEUED and COMPLETED present</span>
+<span class="cmt"># 4. Return average</span></pre>
+<p>Say out loud: <strong>"I'm going to write my plan first so we're aligned before I dive in."</strong></p>
+<p>This is not wasted time — it does three things: catches design flaws early, shows reasoning structure, gives you a checklist.</p>
+<p>If your plan is wrong, you want them to redirect you NOW — not at minute 40.</p>`
+  },
+  {
+    id: "2min-3",
+    category: "2min",
+    front: "Event pipeline pattern — state machine in a dict (with code)",
+    back: `<pre>job_times = <span class="fn">defaultdict</span>(dict)
+<span class="kw">for</span> event <span class="kw">in</span> events:
+    job_times[event[<span class="str">'job_id'</span>]][event[<span class="str">'event_type'</span>]] = event[<span class="str">'timestamp'</span>]
+
+durations = []
+<span class="kw">for</span> job_id, times <span class="kw">in</span> job_times.<span class="fn">items</span>():
+    <span class="kw">if</span> <span class="str">'QUEUED'</span> <span class="kw">in</span> times <span class="kw">and</span> <span class="str">'COMPLETED'</span> <span class="kw">in</span> times:
+        durations.<span class="fn">append</span>(times[<span class="str">'COMPLETED'</span>] - times[<span class="str">'QUEUED'</span>])
+
+<span class="kw">return</span> <span class="fn">sum</span>(durations) / <span class="fn">len</span>(durations) <span class="kw">if</span> durations <span class="kw">else</span> <span class="num">0</span></pre>
+<p><strong>Tricky part: retries.</strong> If a job can restart, you need first vs. last STARTED. Ask before you code.</p>
+<p>Scale follow-up: maintain running dict in memory, emit result when terminal event closes a job. TTL to evict stuck jobs.</p>`
+  },
+  {
+    id: "2min-4",
+    category: "2min",
+    front: "Log parsing + aggregation pattern — filter → group → aggregate → sort",
+    back: `<pre><span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+
+<span class="kw">def</span> <span class="fn">top_slow_endpoints</span>(logs, n=<span class="num">5</span>):
+    endpoint_durations = <span class="fn">defaultdict</span>(list)
+    <span class="kw">for</span> log <span class="kw">in</span> logs:
+        <span class="kw">if</span> <span class="num">200</span> &lt;= log[<span class="str">'status_code'</span>] &lt; <span class="num">300</span>:
+            endpoint_durations[log[<span class="str">'endpoint'</span>]].<span class="fn">append</span>(log[<span class="str">'duration_ms'</span>])
+
+    averages = {ep: <span class="fn">sum</span>(d)/<span class="fn">len</span>(d) <span class="kw">for</span> ep, d <span class="kw">in</span> endpoint_durations.<span class="fn">items</span>()}
+    <span class="kw">return</span> <span class="fn">sorted</span>(averages.<span class="fn">items</span>(), key=<span class="kw">lambda</span> x: x[<span class="num">1</span>], reverse=<span class="kw">True</span>)[:n]</pre>
+<p><strong>Pattern: filter first, then group, then aggregate, then sort.</strong> In that order every time.</p>
+<p>Clarify: 200 or 2xx? Can duration_ms be null? Are logs sorted by timestamp?</p>`
+  },
+  {
+    id: "2min-5",
+    category: "2min",
+    front: "The three failure modes — what are they and how do you avoid each?",
+    back: `<p><strong>Failure 1: Jumping to code without modeling the data.</strong><br>
+Fix: Sketch a 3-record example in a comment. Know what a "good" record looks like and what an "ugly" one looks like.</p>
+<p><strong>Failure 2: Ignoring the volume number they gave you.</strong><br>
+Fix: When the problem says "10M records/day," acknowledge it. Say: "O(n log n) fine for batch, but for real-time I'd switch to streaming."</p>
+<p><strong>Failure 3: Treating the end of core logic as the end of the interview.</strong><br>
+Fix: After core logic → edge cases → scale discussion → invite their questions.</p>
+<p><strong>The senior move is filling that last 12 minutes.</strong></p>`
+  },
+  {
+    id: "2min-6",
+    category: "2min",
+    front: "JSON + missing data pattern — creative assets with nullable fields",
+    back: `<pre><span class="kw">import</span> json
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+
+<span class="kw">with</span> <span class="fn">open</span>(filepath) <span class="kw">as</span> f:
+    assets = json.<span class="fn">load</span>(f)  <span class="cmt"># FILE object — not json.loads</span>
+
+groups = <span class="fn">defaultdict</span>(<span class="kw">lambda</span>: {<span class="str">'count'</span>: <span class="num">0</span>, <span class="str">'latest'</span>: <span class="kw">None</span>})
+<span class="kw">for</span> asset <span class="kw">in</span> assets:
+    model = asset.<span class="fn">get</span>(<span class="str">'model_used'</span>, <span class="str">'unknown'</span>)
+    groups[model][<span class="str">'count'</span>] += <span class="num">1</span>
+    ts = asset.<span class="fn">get</span>(<span class="str">'created_at'</span>)
+    <span class="kw">if</span> ts <span class="kw">and</span> (groups[model][<span class="str">'latest'</span>] <span class="kw">is None</span> <span class="kw">or</span> ts &gt; groups[model][<span class="str">'latest'</span>]):
+        groups[model][<span class="str">'latest'</span>] = ts</pre>
+<p>Say explicitly: <strong>"I'm going to skip records where dimensions are missing rather than treat them as 0, because a 0-area asset would skew the average. Is that right?"</strong></p>`
+  },
+  {
+    id: "2min-7",
+    category: "2min",
+    front: "Sahar's strongest intro — 30-second version",
+    back: `<p><strong>"I'm a senior engineer with a background that's been split between hands-on building and leading technical organizations. Most recently I ran Integrity Institute, which I founded — grew it into a recognized research institution working on platform safety. Before and alongside that, I've shipped real products end-to-end. I'm deliberately seeking roles where I'm actually building — not managing people who build."</strong></p>`
+  },
+  {
+    id: "2min-8",
+    category: "2min",
+    front: "State machine / invalid transitions pattern — what's the code structure?",
+    back: `<pre>VALID_TRANSITIONS = {
+    <span class="str">'QUEUED'</span>: {<span class="str">'STARTED'</span>, <span class="str">'FAILED'</span>},
+    <span class="str">'STARTED'</span>: {<span class="str">'COMPLETED'</span>, <span class="str">'FAILED'</span>},
+    <span class="str">'COMPLETED'</span>: <span class="fn">set</span>(),
+    <span class="str">'FAILED'</span>: {<span class="str">'QUEUED'</span>},  <span class="cmt"># retries allowed?</span>
+}
+
+violations = []
+current_state = {}
+<span class="kw">for</span> event <span class="kw">in</span> <span class="fn">sorted</span>(events, key=<span class="kw">lambda</span> x: x[<span class="str">'timestamp'</span>]):
+    job_id = event[<span class="str">'job_id'</span>]
+    from_state = current_state.<span class="fn">get</span>(job_id, <span class="str">'QUEUED'</span>)
+    to_state = event[<span class="str">'to_state'</span>]
+    <span class="kw">if</span> to_state <span class="kw">not in</span> VALID_TRANSITIONS.<span class="fn">get</span>(from_state, <span class="fn">set</span>()):
+        violations.<span class="fn">append</span>({...})
+    current_state[job_id] = to_state</pre>
+<p>Clarify before coding: Are retries valid? What's the initial state for a new job?</p>`
+  },
+  {
+    id: "2min-9",
+    category: "2min",
+    front: "What to ask at the end — 3 prepared questions (pick one)",
+    back: `<p><strong>Best pick (shows you know the product):</strong><br>
+"FAUNA launched April 3rd with 50+ models. What's been the hardest engineering problem post-launch — managing parallel generation jobs at scale, or something else?"</p>
+<p><strong>Tech depth pick:</strong><br>
+"You moved to Vercel's AI SDK and DurableAgent for FAUNA's orchestration — what drove that over something like Temporal? Was it developer velocity or something structural?"</p>
+<p><strong>Role clarity pick:</strong><br>
+"You're hiring across backend and applied AI simultaneously — where's the biggest gap you're trying to close?"</p>
+<p>Don't ask about compensation. Don't ask what they do.</p>`
+  },
+  {
+    id: "2min-10",
+    category: "2min",
+    front: "Rate-limit detection pattern — full implementation",
+    back: `<pre><span class="kw">from</span> collections <span class="kw">import</span> defaultdict, deque
+
+<span class="kw">def</span> <span class="fn">find_rate_violators</span>(requests, limit=<span class="num">10</span>, window_secs=<span class="num">60</span>):
+    user_timestamps = <span class="fn">defaultdict</span>(list)
+    <span class="kw">for</span> req <span class="kw">in</span> requests:
+        user_timestamps[req[<span class="str">'user_id'</span>]].<span class="fn">append</span>(req[<span class="str">'timestamp'</span>])
+
+    violators = <span class="fn">set</span>()
+    <span class="kw">for</span> user_id, timestamps <span class="kw">in</span> user_timestamps.<span class="fn">items</span>():
+        timestamps.<span class="fn">sort</span>()
+        window = <span class="fn">deque</span>()
+        <span class="kw">for</span> ts <span class="kw">in</span> timestamps:
+            window.<span class="fn">append</span>(ts)
+            <span class="kw">while</span> window <span class="kw">and</span> ts - window[<span class="num">0</span>] &gt; window_secs:
+                window.<span class="fn">popleft</span>()
+            <span class="kw">if</span> <span class="fn">len</span>(window) &gt; limit:
+                violators.<span class="fn">add</span>(user_id)
+    <span class="kw">return</span> <span class="fn">list</span>(violators)</pre>
+<p>Complexity: O(n log n) sort is dominant. Deque ops are O(1) amortized.</p>`
+  },
+  {
+    id: "2min-11",
+    category: "2min",
+    front: "Handling a multi-part problem — what's your sequencing strategy?",
+    back: `<ol>
+  <li>Ask upfront: <strong>"How many parts are there?"</strong> so you can pace yourself.</li>
+  <li>Treat each part as a mini-iteration: clarify → plan → code → test.</li>
+  <li>Don't try to read all parts before starting Part 1.</li>
+  <li>At Part 1 completion: <strong>"Does this look right before I move to Part 2?"</strong></li>
+</ol>
+<p>If you're behind at Part 2: "I'm going to stub Part 3 with a comment explaining my approach rather than leaving it blank." Then code the core of Part 3, even if incomplete.</p>
+<p><strong>Finishing three imperfect parts beats finishing one perfect part.</strong></p>`
+  },
+  {
+    id: "2min-12",
+    category: "2min",
+    front: 'The "volume nudge" response — what do you say when they mention 10M records?',
+    back: `<p><strong>Don't ignore it. Say:</strong></p>
+<p>"At 10M records, my current O(n log n) sort is fine for batch processing — that's about X seconds depending on hardware. If this needed to be real-time, I'd switch to a streaming approach: process events as they arrive, maintain a rolling window in memory, and emit results when a terminal state is reached. For truly large-scale, I'd consider partitioning by user_id so the state fits in distributed memory."</p>
+<p>You don't need to rewrite the solution. You just need to show you saw the number and reasoned about it.</p>`
+  },
+
+  // ──── 5-MINUTE CARDS ────
+  {
+    id: "5min-1a",
+    category: "5min",
+    front: "Event Pipeline — clarifying questions to ask upfront",
+    back: `<p><strong>Problem type:</strong> job events with job_id + status + timestamp → compute durations.</p>
+<ul>
+  <li>"Can a job have multiple STARTED events — e.g., after a retry? First or last STARTED?"</li>
+  <li>"Are events guaranteed to be in chronological order, or could they arrive out of sequence?"</li>
+  <li>"Should I return 0 for failed jobs, or exclude them?"</li>
+  <li>"What's the expected input size? Millions of records or a batch job?"</li>
+</ul>
+<p><strong>Why the retry question matters:</strong> it changes whether you pick the first or last STARTED. Ask before you code.</p>`
+  },
+  {
+    id: "5min-1b",
+    category: "5min",
+    front: "Event Pipeline — comment plan and implementation",
+    back: `<pre><span class="cmt"># Plan:</span>
+<span class="cmt"># 1. Group events by job_id using defaultdict</span>
+<span class="cmt"># 2. For each job, sort events by timestamp</span>
+<span class="cmt"># 3. Find STARTED and terminal event (COMPLETED or FAILED)</span>
+<span class="cmt"># 4. Compute delta; skip jobs without both</span>
+<span class="cmt"># 5. Return dict of job_id -> duration</span></pre>
+<p>Edge cases:</p>
+<ul>
+  <li>STARTED but no terminal event (in progress — skip)</li>
+  <li>No STARTED at all (queued but never ran — skip)</li>
+  <li>Events out of order (sort before processing)</li>
+  <li>Empty input (return empty dict)</li>
+</ul>`
+  },
+  {
+    id: "5min-1c",
+    category: "5min",
+    front: "Event Pipeline — scale follow-up: Kafka streaming answer",
+    back: `<p><strong>They will ask:</strong> "How would you change this if events came in from a Kafka stream in real time?"</p>
+<p><strong>Answer:</strong> "Maintain a running dict in memory keyed by job_id. Process each event as it arrives. When a terminal event (COMPLETED/FAILED) comes in and we have a corresponding STARTED, emit the result and clean up that job's state."</p>
+<p><strong>The tricky part is memory management</strong> — you'd need a TTL to evict jobs that never complete. Otherwise your dict grows unbounded.</p>
+<p>For distributed scale: partition by job_id so each node owns a shard of the state space.</p>`
+  },
+  {
+    id: "5min-2a",
+    category: "5min",
+    front: "Rate-Limit Detection — clarifying questions + comment plan",
+    back: `<p><strong>Clarifying questions:</strong></p>
+<ul>
+  <li>"Is 'any 60-second window' inclusive on both ends — [t, t+60] or [t, t+60)?"</li>
+  <li>"Should I return just user_id + endpoint, or also the violation timestamp?"</li>
+  <li>"Are requests sorted by timestamp, or should I sort them?"</li>
+  <li>"Should I deduplicate — if a user violates at t=5 and t=10, report once or twice?"</li>
+</ul>
+<pre><span class="cmt"># Plan:</span>
+<span class="cmt"># 1. Group requests by (user_id, endpoint) tuple</span>
+<span class="cmt"># 2. Sort each group by timestamp</span>
+<span class="cmt"># 3. Slide a deque window: push ts, evict old, check size</span>
+<span class="cmt"># 4. When size > 10, add to violators set (prevents duplicates)</span>
+<span class="cmt"># 5. Return list of violating pairs</span></pre>`
+  },
+  {
+    id: "5min-2b",
+    category: "5min",
+    front: "Rate-Limit Detection — edge cases and domain context to drop",
+    back: `<p><strong>Edge cases:</strong></p>
+<ul>
+  <li>User with only 1 request (no violation possible)</li>
+  <li>All requests at the same timestamp (window size = all of them)</li>
+  <li>Empty input (return empty list)</li>
+</ul>
+<p><strong>Complexity to mention:</strong> O(n log n) for the sort — that's the dominant cost. Deque ops are O(1) amortized.</p>
+<p><strong>Bonus context to drop:</strong> "This is essentially what you'd run in a billing or abuse detection context — or in Flora's case, for rate-limiting calls to expensive model APIs."</p>
+<p>Use a <code>set</code> not a <code>list</code> for violators — prevents duplicate reporting.</p>`
+  },
+  {
+    id: "5min-3a",
+    category: "5min",
+    front: "Schema Transformation — clarifying questions (Flora's data model)",
+    back: `<p><strong>Problem:</strong> JSON file of creative assets: <code>{id, name, model_used, tags: [], created_at, metadata: {width, height}}</code>. Some fields missing/null.</p>
+<p><strong>Clarifying questions:</strong></p>
+<ul>
+  <li>"Should I skip records where width/height is null, or treat as 0 in the average?"</li>
+  <li>"<code>created_at</code> — ISO 8601 string or epoch? Can I use string comparison for 'most recent'?"</li>
+  <li>"Should I return a dict, print it, or write to a file?"</li>
+  <li>"Are there records where <code>metadata</code> itself is missing entirely, not just null dimensions?"</li>
+</ul>
+<p>Say explicitly before coding: "I'm going to skip records where dimensions are missing rather than treat them as 0, because a 0-area asset would skew the average. Is that right?"</p>`
+  },
+  {
+    id: "5min-3b",
+    category: "5min",
+    front: "Schema Transformation — key implementation notes",
+    back: `<pre><span class="cmt"># json.load(f) not json.loads — it's a FILE</span>
+<span class="kw">with</span> <span class="fn">open</span>(filepath) <span class="kw">as</span> f:
+    assets = json.<span class="fn">load</span>(f)
+
+<span class="cmt"># Safe nested access (handles missing metadata entirely)</span>
+width = record.<span class="fn">get</span>(<span class="str">'metadata'</span>, {}).<span class="fn">get</span>(<span class="str">'width'</span>)
+
+<span class="cmt"># ISO 8601 sorts lexicographically — string max() works</span>
+latest = <span class="fn">max</span>(candidates) <span class="kw">if</span> candidates <span class="kw">else</span> <span class="kw">None</span></pre>
+<p>For ISO 8601 max: "String comparison works here because ISO 8601 sorts lexicographically. If the format were ambiguous, I'd parse with <code>datetime.fromisoformat</code>."</p>
+<p>Edge cases: missing metadata key (not just null), all records skipped, only one asset per model.</p>`
+  },
+  {
+    id: "5min-4",
+    category: "5min",
+    front: "The 60-min screen, phase by phase — what's the senior signal in each phase?",
+    back: `<p><strong>0–7 min (Read + clarify):</strong> Ask specific binary questions, not "any edge cases?"</p>
+<p><strong>7–12 min (Sketch plan):</strong> Comment block + narrate. "I'm going to write my plan first."</p>
+<p><strong>12–35 min (Core):</strong> Run after each function. If plan was wrong, say it out loud and pivot.</p>
+<p><strong>35–47 min (Edge cases):</strong> Malformed input, empty cases, missing keys. Use <code>.get()</code>.</p>
+<p><strong>47–58 min (Optimize):</strong> "O(n log n) for batch. At 10M records, streaming approach instead."</p>
+<p><strong>58–60 min (Wrap):</strong> One sentence + invite their question.</p>
+<p><strong>Senior signal in every phase: Make your reasoning audible.</strong></p>`
+  },
+  {
+    id: "5min-5",
+    category: "5min",
+    front: "Sahar's stories (STAR format) — the four key ones",
+    back: `<p><strong>Story 2 — Full-stack shipping:</strong> "I'm not a big-company bureaucrat — I write the code."</p>
+<p><strong>Story 6 — Small team/startup:</strong> "I'm comfortable at the stage where there's no playbook and shipping is the strategy."</p>
+<hr style="border-color: var(--border); margin: 10px 0;">
+<p><strong>Story 1 — Integrity Institute:</strong> "I built something from nothing, in a domain where the playbook didn't exist yet."</p>
+<p><strong>Story 3 — Non-technical stakeholders:</strong> "I know how to be the technical voice in a room that's not all technical."</p>`
+  },
+  {
+    id: "5min-6",
+    category: "5min",
+    front: "Python warm-up block (Tue 10–11:30am) — what to run and what to verify",
+    back: `<p><strong>Problem A (Event Pipeline):</strong> Write <code>avg_completion_time(events)</code> in under 15 min. Manual test with 3-4 records.</p>
+<p><strong>Problem B (Rate Limit):</strong> Write <code>find_rate_violators(requests, limit=10, window_secs=60)</code> in under 15 min.</p>
+<p><strong>Check yourself on every gotcha:</strong></p>
+<ul>
+  <li>Used <code>json.load(f)</code> not <code>json.loads</code> for file reading?</li>
+  <li>Imported from collections at the top?</li>
+  <li>Used <code>.get()</code> for dict access, not direct indexing?</li>
+  <li>Sort lambda worked without a typo?</li>
+  <li>Ran a test case after each function?</li>
+</ul>
+<p>If either problem takes more than 20 min: do another rep tonight.</p>`
+  },
+  {
+    id: "5min-7",
+    category: "5min",
+    front: "End-of-interview playbook — what do you do in the last 12 minutes?",
+    back: `<p><strong>Step 1 — Edge cases (5 min):</strong></p>
+<ul>
+  <li>Empty input: <code>if not records: return {}</code></li>
+  <li>Missing keys: <code>.get('field', default)</code> everywhere</li>
+  <li>Malformed records: skip with comment — "In production I'd log this rather than silently drop it"</li>
+</ul>
+<p><strong>Step 2 — Scale discussion (3 min):</strong> "O(n log n) for batch. For real-time, streaming + rolling window. For distributed, partition by job_id."</p>
+<p><strong>Step 3 — Observability (2 min):</strong> "In production I'd add: processing time metrics per batch, count of skipped malformed records, alert if error rate exceeds X%."</p>
+<p><strong>Step 4 — Invite their questions (2 min).</strong></p>`
+  },
+  {
+    id: "5min-8",
+    category: "5min",
+    front: "What the screen IS testing vs. what it is NOT testing",
+    back: `<p><strong>IS testing:</strong></p>
+<ol>
+  <li>Can you structure a solution before you code? (plan-in-comments)</li>
+  <li>Can you ask specific, useful clarifying questions?</li>
+  <li>Do you test iteratively?</li>
+  <li>Do you reason about trade-offs out loud?</li>
+  <li>Do you handle missing/malformed data gracefully? (<code>.get()</code> everywhere)</li>
+</ol>
+<p><strong>NOT testing:</strong></p>
+<ul>
+  <li>Optimal algorithm for a DSA problem</li>
+  <li>LeetCode Hard under pressure</li>
+  <li>Memorized every Python method</li>
+</ul>
+<p><strong>If you get stuck:</strong> narrate it. "I'm deciding between a dict and a list here — the dict is O(1) lookup but uses more memory. I'll go with the dict." Thinking out loud when stuck is MORE impressive than never seeming stuck.</p>`
+  },
+
+  // ──── GOTCHA CHEAT-SHEET CARDS ────
+  {
+    id: "gotcha-1",
+    category: "gotcha",
+    front: "The 5 stdlib imports — name them all",
+    back: `<pre><span class="kw">from</span> collections <span class="kw">import</span> defaultdict, Counter, deque
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">import</span> json</pre>
+<p>That's it. No external libraries. <code>defaultdict</code>, <code>Counter</code>, <code>deque</code> are the workhorses. <code>datetime.fromisoformat()</code> for parsing ISO strings. <code>json.load()</code> / <code>json.loads()</code> for JSON.</p>`
+  },
+  {
+    id: "gotcha-2",
+    category: "gotcha",
+    front: "File I/O pattern — write it from memory",
+    back: `<pre><span class="cmt"># Reading a text file</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">'data.json'</span>, <span class="str">'r'</span>) <span class="kw">as</span> f:
+    data = json.<span class="fn">load</span>(f)
+
+<span class="cmt"># Writing a text file</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">'output.json'</span>, <span class="str">'w'</span>) <span class="kw">as</span> f:
+    json.<span class="fn">dump</span>(result, f, indent=<span class="num">2</span>)
+
+<span class="cmt"># Reading binary (images)</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">'file.bin'</span>, <span class="str">'rb'</span>) <span class="kw">as</span> f:
+    raw = f.<span class="fn">read</span>()</pre>
+<p>Default mode is <code>'r'</code> (text). Rarely need <code>'rb'</code> in Systems-Data problems. Always use <code>with</code> statement — handles close automatically.</p>`
+  },
+  {
+    id: "gotcha-3",
+    category: "gotcha",
+    front: "Counter pattern — when to use it and how",
+    back: `<pre><span class="kw">from</span> collections <span class="kw">import</span> Counter
+
+<span class="cmt"># Frequency count of a list</span>
+counts = <span class="fn">Counter</span>(items)
+top3 = counts.<span class="fn">most_common</span>(<span class="num">3</span>)
+
+<span class="cmt"># Count field values in records</span>
+model_counts = <span class="fn">Counter</span>(r[<span class="str">'model_used'</span>] <span class="kw">for</span> r <span class="kw">in</span> records
+                        <span class="kw">if</span> r.<span class="fn">get</span>(<span class="str">'model_used'</span>))</pre>
+<p>Use Counter when you just need counts. Use defaultdict(list) when you need to accumulate the full records, not just counts.</p>
+<p><code>.most_common(n)</code> returns list of (item, count) tuples sorted by count descending.</p>`
+  },
+  {
+    id: "gotcha-4",
+    category: "gotcha",
+    front: "defaultdict vs regular dict — when to use which?",
+    back: `<pre><span class="cmt"># defaultdict — auto-creates value on first access</span>
+groups = <span class="fn">defaultdict</span>(list)
+groups[<span class="str">'key'</span>].<span class="fn">append</span>(<span class="str">'value'</span>)  <span class="cmt"># no KeyError</span>
+
+<span class="cmt"># Regular dict — raises KeyError on missing key</span>
+groups = {}
+groups.<span class="fn">setdefault</span>(<span class="str">'key'</span>, []).<span class="fn">append</span>(<span class="str">'value'</span>)  <span class="cmt"># equivalent</span>
+
+<span class="cmt"># defaultdict with factory function</span>
+stats = <span class="fn">defaultdict</span>(<span class="kw">lambda</span>: {<span class="str">'count'</span>: <span class="num">0</span>, <span class="str">'total'</span>: <span class="num">0</span>})</pre>
+<p>Use <code>defaultdict</code> when building accumulators in a loop. Use regular dict when you want KeyError to signal missing data.</p>`
+  },
+  {
+    id: "gotcha-5",
+    category: "gotcha",
+    front: "Dict comprehension — common patterns",
+    back: `<pre><span class="cmt"># From list of tuples</span>
+d = {k: v <span class="kw">for</span> k, v <span class="kw">in</span> pairs}
+
+<span class="cmt"># Compute aggregate per group</span>
+averages = {
+    ep: <span class="fn">sum</span>(d) / <span class="fn">len</span>(d)
+    <span class="kw">for</span> ep, d <span class="kw">in</span> endpoint_durations.<span class="fn">items</span>()
+}
+
+<span class="cmt"># Filter + transform</span>
+result = {
+    k: v <span class="kw">for</span> k, v <span class="kw">in</span> data.<span class="fn">items</span>()
+    <span class="kw">if</span> v <span class="kw">is not None</span>
+}</pre>
+<p>Dict comprehension at the end of an aggregation pipeline is where people make mistakes under pressure. <strong>Write it out longhand if needed — correctness over cleverness.</strong></p>`
+  }
+];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let allCards = [...CARDS];
+let deck = [...CARDS];
+let currentIdx = 0;
+let isFlipped = false;
+let knownSet = new Set();
+let currentFilter = 'all';
+
+function buildDeck() {
+  deck = allCards.filter(c => {
+    if (knownSet.has(c.id)) return false;
+    if (currentFilter === 'all') return true;
+    return c.category === currentFilter;
+  });
+  if (deck.length === 0) {
+    // Show all in the filter even if known
+    deck = allCards.filter(c => {
+      if (currentFilter === 'all') return true;
+      return c.category === currentFilter;
+    });
+  }
+}
+
+function renderCard() {
+  if (deck.length === 0) {
+    document.getElementById('cardScene').style.display = 'none';
+    return;
+  }
+  document.getElementById('cardScene').style.display = '';
+  const card = deck[currentIdx];
+  if (!card) { currentIdx = 0; }
+  const c = deck[currentIdx];
+
+  document.getElementById('frontTitle').textContent = c.front;
+  document.getElementById('backBody').innerHTML = c.back;
+
+  // Reset flip
+  isFlipped = false;
+  document.getElementById('cardInner').classList.remove('flipped');
+
+  // Progress
+  const total = deck.length;
+  const pos = currentIdx + 1;
+  document.getElementById('progressText').textContent = `Card ${pos} of ${total}`;
+  const pct = Math.round((pos / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  // Category badge
+  const badge = document.getElementById('catBadge');
+  const catMap = { '1min': '1-min', '2min': '2-min', '5min': '5-min', 'gotcha': 'Gotcha' };
+  badge.textContent = catMap[c.category] || c.category;
+  badge.className = 'cat-badge cat-' + c.category;
+
+  // Known indicator
+  const scene = document.getElementById('cardScene');
+  if (knownSet.has(c.id)) {
+    scene.classList.add('is-known');
+  } else {
+    scene.classList.remove('is-known');
+  }
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('cardInner').classList.toggle('flipped', isFlipped);
+}
+
+function nextCard() {
+  currentIdx = (currentIdx + 1) % deck.length;
+  renderCard();
+}
+
+function prevCard() {
+  currentIdx = (currentIdx - 1 + deck.length) % deck.length;
+  renderCard();
+}
+
+function shuffle() {
+  // Fisher-Yates
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  currentIdx = 0;
+  renderCard();
+}
+
+function markKnown() {
+  const card = deck[currentIdx];
+  if (!card) return;
+  if (knownSet.has(card.id)) {
+    knownSet.delete(card.id);
+  } else {
+    knownSet.add(card.id);
+  }
+  renderCard();
+}
+
+function resetKnown() {
+  knownSet.clear();
+  buildDeck();
+  currentIdx = 0;
+  renderCard();
+}
+
+function setFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === filter);
+  });
+  buildDeck();
+  currentIdx = 0;
+  renderCard();
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'n') nextCard();
+  else if (e.key === 'ArrowLeft' || e.key === 'p') prevCard();
+  else if (e.key === ' ' || e.key === 'f') { e.preventDefault(); flipCard(); }
+  else if (e.key === 'k') markKnown();
+  else if (e.key === 's') shuffle();
+});
+
+// Swipe support
+let touchStartX = 0;
+document.getElementById('cardScene').addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].clientX;
+}, { passive: true });
+document.getElementById('cardScene').addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 50) {
+    if (dx < 0) nextCard();
+    else prevCard();
+  }
+}, { passive: true });
+
+// Init
+buildDeck();
+renderCard();
+</script>
+</body>
+</html>
